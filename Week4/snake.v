@@ -7,8 +7,8 @@ module lab_4(input clk,
     reg [24:0] count;
     wire dis_clk,d_clk;
     reg [7:0] seg7_temp [0:3]; //We have 4 parts to illuminate, so we need 4 slots to store the right value
-    reg [3:0] seg7_cnt; // Counter enables the use of fast illumination
-    reg [1:0] dis_cnt; //The display counter used to reach different states for the snakes, we have 21 states.
+    reg [4:0] seg7_cnt; //The display counter used to reach different states for the snakes, we have 21 states.
+    reg [1:0] dis_cnt; //Counter for fast illumination
 
     // Clk counter for frequency divider
     always @(posedge clk or negedge rst_n)begin
