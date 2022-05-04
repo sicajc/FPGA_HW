@@ -1,523 +1,193 @@
-module snake(input clk,
+module lab_4(input clk,
              input rst_n,
              input sw,
              input btn_c,
-             output [2:0] seg7_sel,
-             output [7:0] seg7);
-
-    //Parameters
-    parameter S0  = 'd0;
-    parameter S1  = 'd1;
-    parameter S2  = 'd2;
-    parameter S3  = 'd3;
-    parameter S4  = 'd4;
-    parameter S5  = 'd5;
-    parameter S6  = 'd6;
-    parameter S7  = 'd7;
-    parameter S8  = 'd8;
-    parameter S9  = 'd9;
-    parameter S10 = 'd10;
-    parameter S11 = 'd11;
-    parameter S12 = 'd12;
-    parameter S13 = 'd13;
-    parameter S14 = 'd14;
-    parameter S15 = 'd15;
-    parameter S16 = 'd16;
-    parameter S17 = 'd17;
-    parameter S18 = 'd18;
-    parameter S19 = 'd19;
-    parameter S20 = 'd20;
-    parameter S21 = 'd21;
-    parameter S22 = 'd22;
-    parameter S23 = 'd23;
-
-    // ==  ==  == Register ==  ==  ==
-    reg [7:0] seg7;
-    reg [3:0] seg7_cnt; //4 bits
+             output reg [3:0] seg7_sel,
+             output reg [7:0] seg7);
     reg [24:0] count;
-    reg [2:0] seg7_sel;
-    reg [3:0] seg7_temp;
-    reg [4:0] state_counter;
+    wire dis_clk,d_clk;
+    reg [7:0] seg7_temp [0:3]; //We have 4 parts to illuminate, so we need 4 slots to store the right value
+    reg [4:0] seg7_cnt; //The display counter used to reach different states for the snakes, we have 21 states.
+    reg [1:0] dis_cnt; //Counter for fast illumination
 
-    wire d_clk;
-
-
-    wire max_state_count_reach_flag = state_counter == 'd21 & !sw ;
-    wire min_state_count_reach_flag = state_counter == 'd0 & sw ;
-    wire seg7_cnt_zero_flag   = seg7_cnt == 'd0;
-
-    // ==  ==  == frequency division ==  ==  ==
-    always @(posedge clk or negedge rst_n)
-    begin
-        if (!rst_n)
-            count <= 0;
-        else if (btn_c)
-            count <= count + 1;
-        else
-            count <= count + 2;
-    end
-
-    assign d_clk = count[24] & count[23]; //enables slower movements , frequency would become lower
-    assign d_clk_seg7_cnt = count[23];
-
-    // ==  ==  == STATE COUNTER ==  ==  == //
-    always @(posedge d_clk or negedge rst_n)begin
-        if (!rst_n)                 //We have 21 states to enumerate
-            state_counter <= 'd0;
-        else if (max_state_count_reach_flag)
-            state_counter <= 'd0;
-        else if (min_state_count_reach_flag)
-            state_counter <= 'd21;
-        else if (sw)
-            state_counter <= state_counter - 'd1;
-        else
-            state_counter <= state_counter + 'd1;
-    end
-
-    // ==  ==  == SEVEN segment display light control ==  ==  ==
-    always @(posedge d_clk_seg7_cnt or negedge rst_n)begin
-        if (!rst_n)                 //We have 4 displayer needs to control thus set to 4
-            seg7_cnt <= 'd4;
-        else if (seg7_cnt_zero_flag)
-            seg7_cnt <= 'd4;
-        else
-            seg7_cnt <= seg7_cnt - 'd1;
-    end
-
-    always @(posedge d_clk or negedge rst_n)begin
+    // Clk counter for frequency divider
+    always @(posedge clk or negedge rst_n)begin
         if (!rst_n)
         begin
-            seg7_sel <= 0;
-            seg7     <= 0;
+            count <= 0;
         end
         else
         begin
-            case(state_counter)
-                S0:
-                begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b1000;
-                        1:	seg7_sel <= 4'b0100;
-                        2:	seg7_sel <= 4'b0010;
-                        3:	seg7_sel <= 4'b0001;
+            count <= count + 1;
+        end
+    end
 
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0000_0001;
-                        2:seg7 <= 8'b0000_0001;
-                        3:seg7 <= 8'b0000_0001;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+    assign dis_clk = count[17];
+    assign d_clk   = !btn_c ? count[23] : count[22];
+
+    //Used to display different snake pattern
+    always @(posedge d_clk or negedge rst_n)
+    begin
+        if (!rst_n)begin
+            seg7_cnt <= 0;
+        end
+        else if ((seg7_cnt == 'd21) && (!sw))
+        begin
+            seg7_cnt <= 0;
+        end
+            else if ((seg7_cnt == 'd0) && sw)
+            begin
+            seg7_cnt <= 'd21;
+            end
+            else if (sw)
+            begin
+            seg7_cnt <= seg7_cnt - 'd1;
+            end
+        else
+        begin
+            seg7_cnt <= seg7_cnt + 'd1;
+        end
+    end
+
+    // Output Contral,we must save the value into seg7_temp first, otherwise it would not be loaded
+    always @(posedge d_clk or negedge rst_n)begin
+        if (!rst_n)
+        begin
+            seg7_temp[0] <= 8'b0000_0001;
+            seg7_temp[1] <= 8'b0000_0001;
+            seg7_temp[2] <= 8'b0000_0001;
+            seg7_temp[3] <= 8'b0000_0001;
+        end
+        else
+        begin
+            case(seg7_cnt)
+                0:
+                begin
+                    seg7_temp[3] <= 8'b0000_0001;seg7_temp[2] <= 8'b0000_0001; seg7_temp[1] <= 8'b0000_0001; seg7_temp[0] <= 8'b0000_0001;
                 end
-                S1:
+                1:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b0100;
-                        1:	seg7_sel <= 4'b0010;
-                        2:	seg7_sel <= 4'b0001;
-                        3:	seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0000_0001;
-                        2:seg7 <= 8'b0000_0001;
-                        3:seg7 <= 8'b0000_0010;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_0000;seg7_temp[2] <= 8'b0000_0001; seg7_temp[1] <= 8'b0000_0001; seg7_temp[0] <= 8'b0000_0011;
                 end
-                S2:
+                2:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b0010;
-                        1:	seg7_sel <= 4'b0001;
-                        2:	seg7_sel <= 4'b0001;
-                        3:	seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0000_0001;
-                        2:seg7 <= 8'b0000_0010;
-                        3:seg7 <= 8'b0100_0000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_0000;seg7_temp[2] <= 8'b0000_0000; seg7_temp[1] <= 8'b0000_0001; seg7_temp[0] <= 8'b0100_0011;
                 end
-                S3:
+                3:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b0001;
-                        1:	seg7_sel <= 4'b0010;
-                        2:	seg7_sel <= 4'b0100;
-                        3:	seg7_sel <= 4'b1000;
-
-                        0:seg7 <= 8'b0011_1111;
-                        1:seg7 <= 8'b0000_0110;
-                        2:seg7 <= 8'b0101_1011;
-                        3:seg7 <= 8'b0100_1111;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_0000;seg7_temp[2] <= 8'b0000_0000; seg7_temp[1] <= 8'b0100_0000; seg7_temp[0] <= 8'b0100_0011;
                 end
-
-                S4:
+                4:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b0100;
-                        1:	seg7_sel <= 4'b0010;
-                        2:	seg7_sel <= 4'b0001;
-                        3:	seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0100_0000;
-                        1:seg7 <= 8'b0100_0000;
-                        2:seg7 <= 8'b0000_0010;
-                        3:seg7 <= 8'b0100_0000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_0000;seg7_temp[2] <= 8'b0100_0000; seg7_temp[1] <= 8'b0100_0000; seg7_temp[0] <= 8'b0100_0010;
                 end
-
-                S5:
+                5:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b1000;
-                        1:	seg7_sel <= 4'b0100;
-                        2:	seg7_sel <= 4'b0010;
-                        3:	seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0100_0000;
-                        1:seg7 <= 8'b0100_0000;
-                        2:seg7 <= 8'b0100_0000;
-                        3:seg7 <= 8'b0100_0000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0100_0000;seg7_temp[2] <= 8'b0100_0000; seg7_temp[1] <= 8'b0100_0000; seg7_temp[0] <= 8'b0100_0100;
                 end
-                S6:
+                6:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b1000;
-                        1:	seg7_sel <= 4'b1000;
-                        2:	seg7_sel <= 4'b0100;
-                        3:	seg7_sel <= 4'b0010;
-
-                        0:seg7 <= 8'b0010_0000;
-                        1:seg7 <= 8'b0100_0000;
-                        2:seg7 <= 8'b0100_0000;
-                        3:seg7 <= 8'b0100_0000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0110_0000;seg7_temp[2] <= 8'b0100_0000; seg7_temp[1] <= 8'b0100_0000; seg7_temp[0] <= 8'b0000_0000;
                 end
-
-                S7:
+                7:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b1000;
-                        1:	seg7_sel <= 4'b1000;
-                        2:	seg7_sel <= 4'b1000;
-                        3:	seg7_sel <= 4'b0100;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0010_0000;
-                        2:seg7 <= 8'b0100_0000;
-                        3:seg7 <= 8'b0100_0000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0110_0001;seg7_temp[2] <= 8'b0100_0000; seg7_temp[1] <= 8'b0000_0000; seg7_temp[0] <= 8'b0000_0000;
                 end
-                S8:
+                8:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b1000;
-                        1:	seg7_sel <= 4'b1000;
-                        2:	seg7_sel <= 4'b1000;
-                        3:	seg7_sel <= 4'b0100;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0010_0000;
-                        2:seg7 <= 8'b0100_0000;
-                        3:seg7 <= 8'b0000_0001;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0110_0001;seg7_temp[2] <= 8'b0000_0001; seg7_temp[1] <= 8'b0000_0000; seg7_temp[0] <= 8'b0000_0000;
                 end
-                S9:
+                9:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b0001;
-                        1:	seg7_sel <= 4'b0001;
-                        2:	seg7_sel <= 4'b0010;
-                        3:	seg7_sel <= 4'b0100;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0010_0000;
-                        2:seg7 <= 8'b0000_0001;
-                        3:seg7 <= 8'b0000_0001;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0010_0001;seg7_temp[2] <= 8'b0000_0001; seg7_temp[1] <= 8'b0000_0001; seg7_temp[0] <= 8'b0000_0000;
                 end
-                S10:
+                10:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b1000;
-                        1:	seg7_sel <= 4'b0100;
-                        2:	seg7_sel <= 4'b0010;
-                        3:	seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0000_0001;
-                        2:seg7 <= 8'b0000_0001;
-                        3:seg7 <= 8'b0000_0001;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_0001;seg7_temp[2] <= 8'b0000_0001; seg7_temp[1] <= 8'b0000_0001; seg7_temp[0] <= 8'b0000_0001;
                 end
-                S11:
+                11:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b0100;
-                        1:	seg7_sel <= 4'b0010;
-                        2:	seg7_sel <= 4'b0001;
-                        3:	seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0000_0001;
-                        2:seg7 <= 8'b0000_0001;
-                        3:seg7 <= 8'b0000_0010;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_0000;seg7_temp[2] <= 8'b0000_0001; seg7_temp[1] <= 8'b0000_0001; seg7_temp[0] <= 8'b0000_0011;
                 end
-                S12:
+                12:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b0100;
-                        1:	seg7_sel <= 4'b0010;
-                        2:	seg7_sel <= 4'b0001;
-                        3:	seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0000_0001;
-                        2:seg7 <= 8'b0000_0001;
-                        3:seg7 <= 8'b0000_0010;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_0000;seg7_temp[2] <= 8'b0000_0000; seg7_temp[1] <= 8'b0000_0001; seg7_temp[0] <= 8'b0000_0111;
                 end
-                S13:
-                begin
-                    case(seg7_cnt)
-                        0,1,2,3: seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0000_0010;
-                        2:seg7 <= 8'b0000_0100;
-                        3:seg7 <= 8'b0000_1000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                13
+                :begin
+                    seg7_temp[3] <= 8'b0000_0000;seg7_temp[2] <= 8'b0000_0000; seg7_temp[1] <= 8'b0000_0000; seg7_temp[0] <= 8'b0000_1111;
                 end
-                S14:
+                14:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel     <= 4'b0010;
-                        1,2,3:	seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0000_1000;
-                        1:seg7 <= 8'b0000_0010;
-                        2:seg7 <= 8'b0000_0100;
-                        3:seg7 <= 8'b0000_1000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_0000;seg7_temp[2] <= 8'b0000_0000; seg7_temp[1] <= 8'b0000_1000; seg7_temp[0] <= 8'b0000_0111;
                 end
-                S15:
+                15:
                 begin
-                    case(seg7_cnt)
-                        0,1:	seg7_sel <= 4'b0001;
-                        2:	seg7_sel   <= 4'b0010;
-                        3:	seg7_sel   <= 4'b0100;
-
-                        0:seg7 <= 8'b0000_0100;
-                        1:seg7 <= 8'b0000_1000;
-                        2:seg7 <= 8'b0000_1000;
-                        3:seg7 <= 8'b0000_1000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_0000;seg7_temp[2] <= 8'b0000_1000; seg7_temp[1] <= 8'b0000_1000; seg7_temp[0] <= 8'b0000_1100;
                 end
-                S16:
+                16:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b0001;
-                        1:	seg7_sel <= 4'b0010;
-                        2:	seg7_sel <= 4'b0100;
-                        3:	seg7_sel <= 4'b1000;
-
-                        0,1,2,3: seg7 <= 8'b0000_1000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0000_1000;seg7_temp[2] <= 8'b0000_1000; seg7_temp[1] <= 8'b0000_1000; seg7_temp[0] <= 8'b0000_1000;
                 end
-                S17:
+                17:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel   <= 4'b0100;
-                        1:	seg7_sel   <= 4'b0010;
-                        2,3:	seg7_sel <= 4'b1000;
-
-                        0:seg7 <= 8'b0000_1000;
-                        1:seg7 <= 8'b0000_1000;
-                        2:seg7 <= 8'b0000_1000;
-                        3:seg7 <= 8'b0001_0000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0001_1000;seg7_temp[2] <= 8'b0000_1000; seg7_temp[1] <= 8'b0000_1000; seg7_temp[0] <= 8'b0000_0000;
                 end
-                S18:
+                18:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel     <= 4'b0100;
-                        1,2,3:	seg7_sel <= 4'b1000;
-
-                        0:seg7 <= 8'b0000_1000;
-                        1:seg7 <= 8'b0000_1000;
-                        2:seg7 <= 8'b0001_0000;
-                        3:seg7 <= 8'b0010_0000;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0011_1000;seg7_temp[2] <= 8'b0000_1000; seg7_temp[1] <= 8'b0000_0000; seg7_temp[0] <= 8'b0000_0000;
                 end
-                S19:
+                19:
                 begin
-                    case(seg7_cnt)
-                        0,1,2,3:	seg7_sel <= 4'b1000;
-
-                        0:seg7 <= 8'b0000_1000;
-                        1:seg7 <= 8'b0001_0000;
-                        2:seg7 <= 8'b0010_0000;
-                        3:seg7 <= 8'b0000_0001;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0011_1001;seg7_temp[2] <= 8'b0000_0000; seg7_temp[1] <= 8'b0000_0000; seg7_temp[0] <= 8'b0000_0000;
                 end
-                S20:
+                20:
                 begin
-                    case(seg7_cnt)
-                        0,1,2:	seg7_sel <= 4'b1000;
-                        3:	seg7_sel     <= 4'b0100;
-
-                        0:seg7 <= 8'b0001_0000;
-                        1:seg7 <= 8'b0010_0000;
-                        2:seg7 <= 8'b0000_0001;
-                        3:seg7 <= 8'b0000_0001;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0011_0001;seg7_temp[2] <= 8'b0000_0001; seg7_temp[1] <= 8'b0000_0000; seg7_temp[0] <= 8'b0000_0000;
                 end
-                S21:
+                21:
                 begin
-                    case(seg7_cnt)
-                        0,1:	seg7_sel <= 4'b1000;
-                        2:	seg7_sel   <= 4'b0100;
-                        3:	seg7_sel   <= 4'b0010;
-
-                        0:seg7 <= 8'b0010_0000;
-                        1:seg7 <= 8'b0000_0001;
-                        2:seg7 <= 8'b0000_0001;
-                        3:seg7 <= 8'b0000_0001;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0010_0001;seg7_temp[2] <= 8'b0000_0001; seg7_temp[1] <= 8'b0000_0001; seg7_temp[0] <= 8'b0000_0000;
                 end
                 default:
                 begin
-                    case(seg7_cnt)
-                        0:	seg7_sel <= 4'b1000;
-                        1:	seg7_sel <= 4'b0100;
-                        2:	seg7_sel <= 4'b0010;
-                        3:	seg7_sel <= 4'b0001;
-
-                        0:seg7 <= 8'b0000_0001;
-                        1:seg7 <= 8'b0000_0001;
-                        2:seg7 <= 8'b0000_0001;
-                        3:seg7 <= 8'b0000_0001;
-                        default:
-                        begin
-                            seg7     <= 8'b1111_1111;
-                            seg7_sel <= 4'b1000;
-                        end
-                    endcase
+                    seg7_temp[3] <= 8'b0010_0001;seg7_temp[2] <= 8'b0000_0001; seg7_temp[1] <= 8'b0000_0001; seg7_temp[0] <= 8'b0000_0000;
                 end
             endcase
         end
     end
 
+    // Display used to display the seg7 with fast illumination
+    always @(posedge dis_clk or negedge rst_n)begin
+        if (!rst_n)
+        begin
+            dis_cnt <= 0;
+        end
+        else
+        begin
+            if (dis_cnt == 'd4)
+                dis_cnt <= 0;
+            else
+                dis_cnt <= dis_cnt + 1;
+        end
+    end
+
+    always @(posedge dis_clk or negedge rst_n)begin
+        if (!rst_n)
+        begin
+            seg7_sel <= 4'b1111;
+            seg7     <= 8'b0000_0001;
+        end
+        else
+        begin
+            case(dis_cnt)
+                0:seg7_sel <= 4'b0001;
+                1:seg7_sel <= 4'b0010;
+                2:seg7_sel <= 4'b0100;
+                3:seg7_sel <= 4'b1000;
+            endcase
+            seg7 <= seg7_temp[dis_cnt];
+        end
+    end
 
 endmodule
