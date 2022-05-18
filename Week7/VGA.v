@@ -43,10 +43,10 @@ parameter V_ACT   = 480;
 parameter V_TOTAL = V_FRONT + V_SYNC + V_BACK + V_ACT;
 
 //SNAKE STATES
-parameter UP = 'd0 ;
-parameter DOWN = 'd1 ;
-parameter RIGHT = 'd2 ;
-parameter LEFT =  'd3;
+parameter UP = 0 ;
+parameter DOWN = 1 ;
+parameter RIGHT = 2 ;
+parameter LEFT =  3;
 
 
 //Add input buttons for more input options, then we can change the constraint file so that the button would be binded to these inputs
@@ -411,9 +411,7 @@ begin
 end
 
 
-//Coordinates transformations from grid to VGA coordinates
-//Snake has the highest priority, then apple then blackground
-
+//Coordinate transformation from 12x16 grid coordinates to 480x640 VGA coordinates
 wire[4:0] snake_0_origin_x = snake_pos_reg[0][1] * PIXEL_WIDTH;
 wire[4:0] snake_0_origin_y = snake_pos_reg[0][0] * PIXEL_WIDTH;
 wire[4:0] snake_0_bound_x =( snake_pos_reg[0][1] * PIXEL_WIDTH) + PIXEL_WIDTH;
@@ -439,50 +437,50 @@ wire[4:0] snake_4_origin_y = snake_pos_reg[4][0] * PIXEL_WIDTH;
 wire[4:0] snake_4_bound_x = (snake_pos_reg[4][1] * PIXEL_WIDTH) + PIXEL_WIDTH;
 wire[4:0] snake_4_bound_y = (snake_pos_reg[4][0] * PIXEL_WIDTH) + PIXEL_WIDTH;
 
-wire[4:0] apple_origin_x = apple_pos_reg [1] * PIXEL_WIDTH;
-wire[4:0] apple_origin_y = apple_pos_reg [0] * PIXEL_WIDTH;
-wire[4:0] apple_bound_x =  apple_pos_reg [1] * PIXEL_WIDTH + PIXEL_WIDTH;
-wire[4:0] apple_bound_y =  apple_pos_reg [0] * PIXEL_WIDTH + PIXEL_WIDTH;
+wire[4:0] apple_origin_x = apple_pos_reg[1] * PIXEL_WIDTH + PIXEL_WIDTH/4;
+wire[4:0] apple_origin_y = apple_pos_reg[0] * PIXEL_WIDTH + PIXEL_WIDTH/4;
+wire[4:0] apple_bound_x =  apple_origin_x + PIXEL_WIDTH/4;
+wire[4:0] apple_bound_y =  apple_origin_y + PIXEL_WIDTH/4;
 
 
+//Snake has the highest priority, then apple then blackground
 //VGA_DISPLAY
 always @(*)
 begin
     //Snake white
     if((X >= snake_0_bound_x) && (X < snake_0_bound_x) && (Y > snake_0_origin_y) && (Y <= snake_0_bound_y)) // head of snake 0
     begin
-        VGA_RGB = 12'h000; //Snake White
+        VGA_RGB = 12'hfff; //Snake White
     end
     else if ((X >= snake_1_bound_x) && (X < snake_1_bound_x) && (Y > snake_1_origin_y) && (Y <= snake_1_bound_y)
-    && (snake_length_2_flag || snake_length_3_flag || snake_length_4_flag || max_snake_length_rch_flag)) // snake mid section 1
+             && (snake_length_2_flag || snake_length_3_flag || snake_length_4_flag || max_snake_length_rch_flag)) // snake mid section 1
     begin
-        VGA_RGB = 12'h000;
+        VGA_RGB = 12'hfff;
     end
     else if ((X >= snake_2_bound_x) && (X < snake_2_bound_x) && (Y > snake_2_origin_y) && (Y <= snake_2_bound_y)
-    && (snake_length_3_flag || snake_length_4_flag || max_snake_length_rch_flag)) // snake mid section 2
+             && (snake_length_3_flag || snake_length_4_flag || max_snake_length_rch_flag)) // snake mid section 2
     begin
-        VGA_RGB = 12'h000;
+        VGA_RGB = 12'hfff;
     end
     else if((X >= snake_3_bound_x) && (X < snake_3_bound_x) && (Y > snake_3_origin_y) && (Y <= snake_3_bound_y)
-    && (snake_length_4_flag || max_snake_length_rch_flag)) //snake mid section 3
+            && (snake_length_4_flag || max_snake_length_rch_flag)) //snake mid section 3
     begin
-        VGA_RGB = 12'h000;
+        VGA_RGB = 12'hfff;
     end
     else if((X >= snake_4_bound_x) && (X < snake_4_bound_x) && (Y > snake_4_origin_y) && (Y <= snake_4_bound_y)
-    && max_snake_length_rch_flag) //snake mid section 4
+            && max_snake_length_rch_flag) //snake Final section
     begin
-        VGA_RGB = 12'h000;
+        VGA_RGB = 12'hfff;
     end
     else if ((X >= apple_origin_x) && (X <=  apple_bound_x) && (Y > apple_origin_y) && (Y <= apple_bound_y)) // Apple PIXEL
     begin
-        VGA_RGB = 12'h000; //APPLE RED
+        VGA_RGB = 12'hf00; //APPLE RED
     end
     else
     begin
         VGA_RGB = 12'h000; // ELSE BLACKBACKGROUND
     end
 end
-
 
 
 //VGA DISPLAY
