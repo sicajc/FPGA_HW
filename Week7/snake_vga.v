@@ -1,5 +1,4 @@
-`define CYCLE 140000
-module VGA(
+module snake_vga(
            input rst_n,
            input clk,    //100MHz
            input btn_u,
@@ -321,7 +320,7 @@ wire snake_length_4_flag = snake_length_reg == 'd3 ;
 
 
 //(1,0) means (x,y)
-//5 POSITIONS OF SNAKE on the grid
+//5 SECTIONS OF SNAKE on the grid
 //snake_pos_reg[0]
 always @(posedge snake_clk or negedge rst_n)
 begin
