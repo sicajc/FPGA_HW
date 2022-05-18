@@ -10,6 +10,7 @@ module lab5(
            output reg [7:0] seg7,
            output reg [3:0] seg7_sel
        );
+
 //Add input buttons for more input options, then we can change the constraint file so that the button would be binded to these inputs
 reg [20:0] count;
 wire d_clk;
