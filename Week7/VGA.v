@@ -169,7 +169,7 @@ begin
     end
 end
 
-assign d_clk = count[23];
+assign d_clk = count[22];
 assign snake_clk = count[24];
 
 
@@ -315,6 +315,11 @@ begin
     end
 end
 
+wire snake_length_2_flag = snake_length_reg == 'd1 ;
+wire snake_length_3_flag = snake_length_reg == 'd2 ;
+wire snake_length_4_flag = snake_length_reg == 'd3 ;
+
+
 //(1,0) means (x,y)
 //5 POSITIONS OF SNAKE on the grid
 //snake_pos_reg[0]
@@ -407,33 +412,99 @@ end
 
 
 //Coordinates transformations from grid to VGA coordinates
+//Snake has the highest priority, then apple then blackground
+
+wire[4:0] snake_0_origin_x = snake_pos_reg[0][1] * PIXEL_WIDTH;
+wire[4:0] snake_0_origin_y = snake_pos_reg[0][0] * PIXEL_WIDTH;
+wire[4:0] snake_0_bound_x =( snake_pos_reg[0][1] * PIXEL_WIDTH) + PIXEL_WIDTH;
+wire[4:0] snake_0_bound_y =( snake_pos_reg[0][0] * PIXEL_WIDTH) + PIXEL_WIDTH;
+
+wire[4:0] snake_1_origin_x = snake_pos_reg[1][1] * PIXEL_WIDTH;
+wire[4:0] snake_1_origin_y = snake_pos_reg[1][0] * PIXEL_WIDTH;
+wire[4:0] snake_1_bound_x = (snake_pos_reg[1][1] * PIXEL_WIDTH) + PIXEL_WIDTH;
+wire[4:0] snake_1_bound_y = (snake_pos_reg[1][0] * PIXEL_WIDTH) + PIXEL_WIDTH;
+
+wire[4:0] snake_2_origin_x = snake_pos_reg[2][1] * PIXEL_WIDTH;
+wire[4:0] snake_2_origin_y = snake_pos_reg[2][0] * PIXEL_WIDTH;
+wire[4:0] snake_2_bound_x = (snake_pos_reg[2][1] * PIXEL_WIDTH )+ PIXEL_WIDTH;
+wire[4:0] snake_2_bound_y =( snake_pos_reg[2][0] * PIXEL_WIDTH) + PIXEL_WIDTH;
+
+wire[4:0] snake_3_origin_x = snake_pos_reg[3][1] * PIXEL_WIDTH;
+wire[4:0] snake_3_origin_y = snake_pos_reg[3][0] * PIXEL_WIDTH;
+wire[4:0] snake_3_bound_x = (snake_pos_reg[3][1] * PIXEL_WIDTH)+ PIXEL_WIDTH;
+wire[4:0] snake_3_bound_y = (snake_pos_reg[3][0] * PIXEL_WIDTH) + PIXEL_WIDTH;
+
+wire[4:0] snake_4_origin_x = snake_pos_reg[4][1] * PIXEL_WIDTH;
+wire[4:0] snake_4_origin_y = snake_pos_reg[4][0] * PIXEL_WIDTH;
+wire[4:0] snake_4_bound_x = (snake_pos_reg[4][1] * PIXEL_WIDTH) + PIXEL_WIDTH;
+wire[4:0] snake_4_bound_y = (snake_pos_reg[4][0] * PIXEL_WIDTH) + PIXEL_WIDTH;
+
+wire[4:0] apple_origin_x = apple_pos_reg [1] * PIXEL_WIDTH;
+wire[4:0] apple_origin_y = apple_pos_reg [0] * PIXEL_WIDTH;
+wire[4:0] apple_bound_x =  apple_pos_reg [1] * PIXEL_WIDTH + PIXEL_WIDTH;
+wire[4:0] apple_bound_y =  apple_pos_reg [0] * PIXEL_WIDTH + PIXEL_WIDTH;
+
+
+//VGA_DISPLAY
 always @(*)
 begin
-
+    //Snake white
+    if((X >= snake_0_bound_x) && (X < snake_0_bound_x) && (Y > snake_0_origin_y) && (Y <= snake_0_bound_y)) // head of snake 0
+    begin
+        VGA_RGB = 12'h000; //Snake White
+    end
+    else if ((X >= snake_1_bound_x) && (X < snake_1_bound_x) && (Y > snake_1_origin_y) && (Y <= snake_1_bound_y)
+    && (snake_length_2_flag || snake_length_3_flag || snake_length_4_flag || max_snake_length_rch_flag)) // snake mid section 1
+    begin
+        VGA_RGB = 12'h000;
+    end
+    else if ((X >= snake_2_bound_x) && (X < snake_2_bound_x) && (Y > snake_2_origin_y) && (Y <= snake_2_bound_y)
+    && (snake_length_3_flag || snake_length_4_flag || max_snake_length_rch_flag)) // snake mid section 2
+    begin
+        VGA_RGB = 12'h000;
+    end
+    else if((X >= snake_3_bound_x) && (X < snake_3_bound_x) && (Y > snake_3_origin_y) && (Y <= snake_3_bound_y)
+    && (snake_length_4_flag || max_snake_length_rch_flag)) //snake mid section 3
+    begin
+        VGA_RGB = 12'h000;
+    end
+    else if((X >= snake_4_bound_x) && (X < snake_4_bound_x) && (Y > snake_4_origin_y) && (Y <= snake_4_bound_y)
+    && max_snake_length_rch_flag) //snake mid section 4
+    begin
+        VGA_RGB = 12'h000;
+    end
+    else if ((X >= apple_origin_x) && (X <=  apple_bound_x) && (Y > apple_origin_y) && (Y <= apple_bound_y)) // Apple PIXEL
+    begin
+        VGA_RGB = 12'h000; //APPLE RED
+    end
+    else
+    begin
+        VGA_RGB = 12'h000; // ELSE BLACKBACKGROUND
+    end
 end
 
 
 
 //VGA DISPLAY
-always@(*)
-begin
-    if( (X >= 1) && (X <= 80) && (Y > 0) && (Y <= 480) )
-        VGA_RGB = 12'h000;
-    else if( (X >= 81) && (X <= 160) && (Y > 0) && (Y <= 480) )
-        VGA_RGB = 12'h00f;
-    else if( (X >= 161) && (X <= 240) && (Y > 0) && (Y <= 480) )
-        VGA_RGB = 12'h0f0;
-    else if( (X >= 241) && (X <= 320) && (Y > 0) && (Y <= 480) )
-        VGA_RGB = 12'h0ff;
-    else if( (X >= 321) && (X <= 400) && (Y > 0) && (Y <= 480) )
-        VGA_RGB = 12'hf00;
-    else if( (X >= 401) && (X <= 480) && (Y > 0) && (Y <= 480) )
-        VGA_RGB = 12'hf0f;
-    else if( (X >= 481) && (X <= 560) && (Y > 0) && (Y <= 480) )
-        VGA_RGB = 12'hff0;
-    else if( (X >= 561) && (X <= 640) && (Y > 0) && (Y <= 480) )
-        VGA_RGB = 12'hfff;
-    else
-        VGA_RGB = 12'h000;
-end
+// always@(*)
+// begin
+//     if( (X >= 1) && (X <= 80) && (Y > 0) && (Y <= 480) )
+//         VGA_RGB = 12'h000;
+//     else if( (X >= 81) && (X <= 160) && (Y > 0) && (Y <= 480) )
+//         VGA_RGB = 12'h00f;
+//     else if( (X >= 161) && (X <= 240) && (Y > 0) && (Y <= 480) )
+//         VGA_RGB = 12'h0f0;
+//     else if( (X >= 241) && (X <= 320) && (Y > 0) && (Y <= 480) )
+//         VGA_RGB = 12'h0ff;
+//     else if( (X >= 321) && (X <= 400) && (Y > 0) && (Y <= 480) )
+//         VGA_RGB = 12'hf00;
+//     else if( (X >= 401) && (X <= 480) && (Y > 0) && (Y <= 480) )
+//         VGA_RGB = 12'hf0f;
+//     else if( (X >= 481) && (X <= 560) && (Y > 0) && (Y <= 480) )
+//         VGA_RGB = 12'hff0;
+//     else if( (X >= 561) && (X <= 640) && (Y > 0) && (Y <= 480) )
+//         VGA_RGB = 12'hfff;
+//     else
+//         VGA_RGB = 12'h000;
+// end
 endmodule
