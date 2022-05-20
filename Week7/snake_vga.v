@@ -11,7 +11,7 @@ module snake_vga(
            output [3:0] VGA_G,    //Signal Green
            output [3:0] VGA_B     //Signal Blue
        );
-//PIXEL_WIDTH, assume a 12 x 16 grids on VGA
+//PIXEL_WIDTH, assume a 12 x 16 grids on a 480 x 640 VGA
 parameter PIXEL_WIDTH= 40 ;
 
 //APPLE LOCATIONS
@@ -205,7 +205,7 @@ reg[3:0] snake_length_reg;
 
 //index 1 for x ,index 0 for y
 wire apple_hit_flag = ((snake_pos_reg[0][1]== apple_pos_reg[1]) && (snake_pos_reg[0][0]== apple_pos_reg[0]));
-wire max_snake_length_rch_flag = (snake_length_reg == 'd4);
+
 
 wire upper_bondry_rch_flag = snake_pos_reg[0][0] == 'd0;
 wire lower_bondry_rch_flag = snake_pos_reg[0][0] == 'd11;
@@ -317,6 +317,7 @@ end
 wire snake_length_2_flag = snake_length_reg == 'd1 ;
 wire snake_length_3_flag = snake_length_reg == 'd2 ;
 wire snake_length_4_flag = snake_length_reg == 'd3 ;
+wire max_snake_length_rch_flag = (snake_length_reg == 'd4);
 
 
 //(1,0) means (x,y)
