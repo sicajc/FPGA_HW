@@ -1,0 +1,74 @@
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Fri May 20 15:39:43 2022
+| Host         : PC07 running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file snake_vga_control_sets_placed.rpt
+| Design       : snake_vga
+| Device       : xc7a35t
+--------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Number of unique control sets                            |     8 |
+| Unused register locations in slices containing registers |    26 |
++----------------------------------------------------------+-------+
+
+
+2. Histogram
+------------
+
++--------+--------------+
+| Fanout | Control Sets |
++--------+--------------+
+|      8 |            1 |
+|     10 |            2 |
+|    16+ |            5 |
++--------+--------------+
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |               0 |            0 |
+| No           | No                    | Yes                    |             226 |           43 |
+| No           | Yes                   | No                     |               0 |            0 |
+| Yes          | No                    | No                     |               0 |            0 |
+| Yes          | No                    | Yes                    |              44 |            9 |
+| Yes          | Yes                   | No                     |               0 |            0 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++--------------------+--------------------------------+------------------+------------------+----------------+
+|    Clock Signal    |          Enable Signal         | Set/Reset Signal | Slice Load Count | Bel Load Count |
++--------------------+--------------------------------+------------------+------------------+----------------+
+|  snake_clk_BUFG    | snake_length_reg0              | vga_hs_i_2_n_0   |                2 |              8 |
+|  snake_clk_BUFG    | snake_pos_reg[0][0][4]_i_1_n_0 | vga_hs_i_2_n_0   |                2 |             10 |
+|  snake_clk_BUFG    | current_state[1]               | vga_hs_i_2_n_0   |                2 |             10 |
+|  snake_clk_BUFG    | apple_pos_reg[0][3]_i_1_n_0    | vga_hs_i_2_n_0   |                3 |             16 |
+|  VGA_HS_OBUF       |                                | vga_hs_i_2_n_0   |                7 |             40 |
+|  count_reg_n_0_[1] |                                | vga_hs_i_2_n_0   |                6 |             44 |
+|  clk_IBUF_BUFG     |                                | vga_hs_i_2_n_0   |                7 |             50 |
+|  snake_clk_BUFG    |                                | vga_hs_i_2_n_0   |               23 |             92 |
++--------------------+--------------------------------+------------------+------------------+----------------+
+
+
