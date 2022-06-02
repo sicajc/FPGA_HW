@@ -483,6 +483,7 @@ begin
 end
 
 
+
 //VGA DISPLAY
 // always@(*)
 // begin

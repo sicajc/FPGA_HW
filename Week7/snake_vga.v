@@ -200,7 +200,6 @@ assign btn_lft_pulse = {btn_lft,btn_lft_press_flag} == 2'b10 ? 1 : 0;
 assign btn_ri_pulse = {btn_ri,btn_ri_press_flag} == 2'b10 ? 1 : 0;
 
 
-
 reg[4:0] apple_pos_reg [0:1];
 reg[4:0] snake_pos_reg [0:4][0:1];
 reg[3:0] snake_length_reg;
