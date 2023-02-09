@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:33 MDT 2021
+# IP Build 3246043 on Fri Jun 11 00:30:35 MDT 2021
+# Start of session at: Thu Feb  9 18:23:21 2023
+# Process ID: 5024
+# Current directory: C:/Users/HIBIKI/Desktop/FPGA_HW/fpga_lab_mid/fpga+mid/fpga+mid.runs/impl_1
+# Command line: vivado.exe -log tenthirty.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source tenthirty.tcl -notrace
+# Log file: C:/Users/HIBIKI/Desktop/FPGA_HW/fpga_lab_mid/fpga+mid/fpga+mid.runs/impl_1/tenthirty.vdi
+# Journal file: C:/Users/HIBIKI/Desktop/FPGA_HW/fpga_lab_mid/fpga+mid/fpga+mid.runs/impl_1\vivado.jou
+#-----------------------------------------------------------
+source tenthirty.tcl -notrace

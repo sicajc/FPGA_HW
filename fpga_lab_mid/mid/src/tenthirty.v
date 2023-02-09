@@ -18,6 +18,7 @@ localparam  DRAW                    = 4'd2 ;
 localparam  SHOW_DOWN               = 4'd3 ;
 localparam  WAIT_NEXT_ROUND         = 4'd4 ;
 localparam  WAIT_LUT_DEAL_PLAYER    = 4'd7 ;
+localparam  WAIT_LUT_DEAL_HOUSE     = 4'd12;
 localparam  WAIT_LUT_DEAL_DRAW      = 4'd8 ;
 localparam  WAIT_LUT_DRAW           = 4'd9 ;
 localparam  EXCEPTIONS              = 4'd10 ;
@@ -76,8 +77,8 @@ begin
     end
 end
 
-assign d_clk = count[24];
-assign dis_clk = count[23];
+assign d_clk = counter[24];
+assign dis_clk = counter[23];
 
 //================================================================
 //   One pulse generator
@@ -146,6 +147,8 @@ reg[4:0] card_value;// zero-th bit used to store half point.
 
 reg[3:0] round_cnt;
 
+reg [2:0] dis_cnt;
+
 //================================================================
 //   CONTROL SIGNALS
 //================================================================
@@ -171,8 +174,6 @@ wire state_HOUSE_WIN            =  gameResultState == HOUSE_WIN         ;
 wire Start_game = state_IDLE && btn_m_pulse;
 
 wire Deal_Cards = state_DEAL && btn_m_pulse;
-
-wire Finish_dealing_First_card = (LUT_cnt == 2'd1);
 
 wire Busted = ((playerPoints_ff[7:1] > 7'd10) || (housePoints_ff[7:1] > 7'd10)) && state_DRAW ;
 
@@ -269,11 +270,11 @@ always @(posedge d_clk or negedge rst_n)
 begin
     if (~rst_n)
     begin
-        turnState_cur <= PLAYER_DRAW;
+        turnState_cur <= PLAYERS_TURN;
     end
     else if(state_WAIT_NEXT_ROUND)
     begin
-        turnState_cur <= PLAYER_DRAW;
+        turnState_cur <= PLAYERS_TURN;
     end
     else
     begin
@@ -325,6 +326,10 @@ begin
     begin
         gameResultState_next = (housePoints_ff >= playerPoints_ff) ? HOUSE_WIN : PLAYER_WIN;
     end
+    else
+    begin
+        gameResultState_next = gameResultState;
+    end
 end
 
 always @(posedge clk or negedge rst_n)
@@ -357,7 +362,7 @@ begin
     begin
         currentCard_cnt <= 'd0;
     end
-    else if(state_WAIT_LUT_DRAW || state_WAIT_LUT_DEAL)
+    else if(state_WAIT_LUT_DRAW || state_WAIT_LUT_DEAL_HOUSE)
     begin
         currentCard_cnt <= currentCard_cnt + 1;
     end
@@ -376,7 +381,7 @@ begin: House_Cards
             houseCards_rf[i] <= 'd0;
         end
     end
-    else if((state_WAIT_LUT_DRAW || state_WAIT_LUT_DEAL) && state_HOUSE_TURN)
+    else if((state_WAIT_LUT_DRAW || state_WAIT_LUT_DEAL_HOUSE) && state_HOUSE_TURN)
     begin
         houseCards_rf[currentCard_cnt] <= number;
     end
@@ -398,7 +403,7 @@ begin: Player_Cards
             playerCards_rf[i] <= 'd0;
         end
     end
-    else if((state_WAIT_LUT_DRAW || state_WAIT_LUT_DEAL) && state_PLAYERS_TURN)
+    else if((state_WAIT_LUT_DRAW || state_WAIT_LUT_DEAL_PLAYER) && state_PLAYERS_TURN)
     begin
         playerCards_rf[currentCard_cnt] <= number;
     end
@@ -431,7 +436,7 @@ begin: PlayerPoint
     end
 end
 
-always @(posedge d_clk or rst_n)
+always @(posedge d_clk or negedge rst_n)
 begin: HousePoints
     if(~rst_n)
     begin
@@ -469,21 +474,6 @@ end
 //   SEVEN SEGMENT CTR
 //================================================================
 // ==  ==  == SEVEN segment display light control ==  ==  ==
-always @(posedge dis_clk or negedge rst_n)
-begin
-    if (!rst_n)
-    begin
-        seg7_cnt <= 3'd3;
-    end
-    else if (seg7_cnt == 3'd0) //Once become 0 return to 15, fuck you overflow.
-    begin
-        seg7_cnt <= 3'd3;
-    end
-    else
-    begin
-        seg7_cnt <= seg7_cnt - 2'd1;
-    end
-end
 
 wire[7:0] player_digit_temp[0:2];
 assign player_digit_temp[0] = playerPoints_ff[0];
@@ -494,9 +484,6 @@ wire[7:0] house_digit_temp[0:2];
 assign house_digit_temp[0] = housePoints_ff[0];
 assign house_digit_temp[1] = housePoints_ff[7:1] % 10;//INTEGER PARTS
 assign house_digit_temp[2] = housePoints_ff[7:1] / 10;
-
-
-wire[7:0] house_digit_temp[0:2];
 
 always @(posedge dis_clk or negedge rst_n )
 begin
@@ -713,21 +700,113 @@ begin
     end
     else if(state_SHOW_DOWN)
     begin
-        //Player Cards value
-        seg7_temp[0] <= playerCards_rf[0];
-        seg7_temp[1] <= playerCards_rf[1];
-        seg7_temp[2] <= playerCards_rf[2];
+        //Player cards value
+        for(i=0;i<3;i=i+1)
+        begin
+            case(player_digit_temp[i])
+                'd0:
+                begin
+                    seg7_temp[i] <= SEG_RESET;
+                end
+                'd1:
+                begin
+                    seg7_temp[i] <= SEG_ONE;
+                end
+                'd2:
+                begin
+                    seg7_temp[i] <= SEG_TWO;
+                end
+                'd3:
+                begin
+                    seg7_temp[i] <= SEG_THREE;
+                end
+                'd4:
+                begin
+                    seg7_temp[i] <= SEG_FOUR;
+                end
+                'd5:
+                begin
+                    seg7_temp[i] <= SEG_FIVE;
+                end
+                'd6:
+                begin
+                    seg7_temp[i] <= SEG_SIX;
+                end
+                'd7:
+                begin
+                    seg7_temp[i] <= SEG_SEVEN;
+                end
+                'd8:
+                begin
+                    seg7_temp[i] <= SEG_EIGHT;
+                end
+                'd9:
+                begin
+                    seg7_temp[i] <= SEG_NINE;
+                end
+                'd10:
+                begin
+                    seg7_temp[i] <= SEG_TEN;
+                end
+            endcase
+        end
 
         //House Cards value
-        seg7_temp[5] <= houseCards_rf[0];       //HALF POINT
-        seg7_temp[6] <= houseCards_rf[1];       //INTEGER PARTS
-        seg7_temp[7] <= houseCards_rf[2];
+        for(i=0;i<3;i=i+1)
+        begin
+            case(house_digit_temp[i])
+                'd0:
+                begin
+                    seg7_temp[i+5] <= SEG_RESET;
+                end
+                'd1:
+                begin
+                    seg7_temp[i+5] <= SEG_ONE;
+                end
+                'd2:
+                begin
+                    seg7_temp[i+5] <= SEG_TWO;
+                end
+                'd3:
+                begin
+                    seg7_temp[i+5] <= SEG_THREE;
+                end
+                'd4:
+                begin
+                    seg7_temp[i+5] <= SEG_FOUR;
+                end
+                'd5:
+                begin
+                    seg7_temp[i+5] <= SEG_FIVE;
+                end
+                'd6:
+                begin
+                    seg7_temp[i+5] <= SEG_SIX;
+                end
+                'd7:
+                begin
+                    seg7_temp[i+5] <= SEG_SEVEN;
+                end
+                'd8:
+                begin
+                    seg7_temp[i+5] <= SEG_EIGHT;
+                end
+                'd9:
+                begin
+                    seg7_temp[i+5] <= SEG_NINE;
+                end
+                'd10:
+                begin
+                    seg7_temp[i+5] <= SEG_TEN;
+                end
+            endcase
+        end
     end
-    else if(currentState != nextState)
+    else if(nextState == IDLE)
     begin
         for(i=0;i<8;i=i+1)
         begin
-            seg7_temp[i] <= 'd0;
+            seg7_temp[i] <= SEG_RESET;
         end
     end
 end
@@ -834,7 +913,6 @@ begin
     end
 end
 
-
 //================================================================
 //   LUT
 //================================================================
@@ -854,7 +932,7 @@ begin
     end
 end
 
-LUT inst_LUT (.d_clk(d_clk), .rst_n(rst_n), .pip(pip), .number(number));
+LUT inst_LUT (.clk(d_clk), .rst_n(rst_n), .pip(pip), .number(number));
 
 
 endmodule
