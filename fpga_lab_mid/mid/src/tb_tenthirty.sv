@@ -10,8 +10,8 @@ module tb_tenthirty ();
     reg  btn_m; //bottom middle
     reg  btn_r; //bottom right
 	wire [7:0] seg7_sel;
-	wire [7:0] seg7;   
-	wire [7:0] seg7_l; 
+	wire [7:0] seg7;
+	wire [7:0] seg7_l;
 	wire [2:0] led;
 
 //clk
@@ -24,7 +24,7 @@ end
 //   d_clk
 //================================================================
 //frequency division
-reg [24:0] counter; 
+reg [24:0] counter;
 wire d_clk = counter[5];//remember to change your tenthirty.v
 //wire d_clk   = counter[24];
 
@@ -45,12 +45,112 @@ initial begin
   rst_n = 1;
   set_initaial;
   gap = $urandom_range(1,5);
-  repeat(gap)@(negedge clk);
+  repeat(2)@(negedge clk);
   rst_n = 0;
-  repeat(gap)@(negedge clk);
+  repeat(1)@(negedge clk);
   rst_n = 1;
-  repeat(gap)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  btn_r = 0;
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  btn_r = 1;
+  repeat(1)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  btn_r = 0;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  btn_m = 0;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  btn_r = 1;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  btn_r = 0;
+  repeat(1)@(negedge d_clk);
+  btn_r = 0;
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  btn_r = 0;
   btn_m = 1;
+  repeat(3)@(negedge d_clk);
+  btn_r = 1;
+  btn_m = 0;
+  repeat(1)@(negedge d_clk);
+  btn_r = 0;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(gap)@(negedge d_clk);
+  btn_r = 1;
+  repeat(gap)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(gap)@(negedge d_clk);
+  repeat(2)@(negedge d_clk);
+  btn_m = ~btn_m;
+  btn_r = 0;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  btn_r = 0;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  btn_m = 0;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  btn_r = 1;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  btn_r = 0;
+  repeat(1)@(negedge d_clk);
+  btn_r = 0;
+  btn_m = ~btn_m;
+  repeat(1)@(negedge d_clk);
+  btn_r = 0;
+  btn_m = 1;
+  repeat(3)@(negedge d_clk);
+  btn_r = 1;
+  btn_m = 0;
+  repeat(1)@(negedge d_clk);
+  btn_r = 0;
+  repeat(1)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(gap)@(negedge d_clk);
+  btn_r = 1;
+  repeat(gap)@(negedge d_clk);
+  btn_m = ~btn_m;
+  repeat(gap)@(negedge d_clk);
+
   $finish;
 end
 
