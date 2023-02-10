@@ -778,8 +778,8 @@ begin
     else if(state_SHOW_DOWN)
     begin
         // Mid two seg7
+        seg7_temp[3] <= SEG_RESET;
         seg7_temp[4] <= SEG_RESET;
-        seg7_temp[5] <= SEG_RESET;
 
         //Scoreboard half point
         seg7_temp[0] <= player_digit_temp[0] ? SEG_HALF_POINT : SEG_RESET;
