@@ -188,7 +188,7 @@ wire DrawCards = state_DRAW && btn_m_pulse;
 
 wire RoundEnds = (state_SHOW_DOWN || state_WAIT_NEXT_ROUND) && btn_r_pulse;
 
-wire GameEnds  = (round_cnt == 'd4) && state_WAIT_NEXT_ROUND && btn_r_pulse;
+wire GameEnds  = (round_cnt == 4'd5);
 
 //================================================================
 //   FSM
@@ -211,7 +211,7 @@ begin
     case(currentState)
         IDLE:
         begin
-            nextState  = Start_game ? DEAL : IDLE;
+            nextState  = GameEnds ? DONE : (Start_game ? DEAL : IDLE);
         end
         DEAL:
         begin
@@ -261,7 +261,7 @@ begin
         end
         WAIT_NEXT_ROUND:
         begin
-            nextState = RoundEnds ? DONE : IDLE;
+            nextState = GameEnds ? DONE : ( RoundEnds ? IDLE: WAIT_NEXT_ROUND);
         end
         DONE:
         begin
@@ -347,7 +347,7 @@ begin
     begin
         round_cnt <= 'd0;
     end
-    else if(RoundEnds)
+    else if(RoundEnds && state_WAIT_NEXT_ROUND)
     begin
         round_cnt <= round_cnt + 1;
     end
@@ -658,7 +658,7 @@ begin
                 end
                 default:
                 begin
-                    seg7_temp[i+5] <= SEG_RESET;
+                    seg7_temp[i+5] <= SEG_ZERO;
                 end
             endcase
         end
@@ -770,20 +770,26 @@ begin
                 end
                 default:
                 begin
-                    seg7_temp[i+5] <= SEG_RESET;
+                    seg7_temp[i+5] <= SEG_ZERO;
                 end
             endcase
         end
     end
     else if(state_SHOW_DOWN)
     begin
+        // Mid two seg7
+        seg7_temp[4] <= SEG_RESET;
+        seg7_temp[5] <= SEG_RESET;
+
+        //Scoreboard half point
+        seg7_temp[0] <= player_digit_temp[0] ? SEG_HALF_POINT : SEG_RESET;
         //Player cards value
-        for(i=0;i<3;i=i+1)
+        for(i=1;i<3;i=i+1)
         begin
             case(player_digit_temp[i])
                 'd0:
                 begin
-                    seg7_temp[i] <= SEG_RESET;
+                    seg7_temp[i] <= SEG_ZERO;
                 end
                 'd1:
                 begin
@@ -823,11 +829,12 @@ begin
                 end
                 default:
                 begin
-                    seg7_temp[i] <= SEG_RESET;
+                    seg7_temp[i] <= SEG_ZERO;
                 end
             endcase
         end
 
+        //Scoreboard half point
         seg7_temp[5] <= house_digit_temp[0] ? SEG_HALF_POINT : SEG_RESET;
 
         //House Cards value
@@ -836,7 +843,7 @@ begin
             case(house_digit_temp[i])
                 'd0:
                 begin
-                    seg7_temp[i+5] <= SEG_HALF_POINT;
+                    seg7_temp[i+5] <= SEG_ZERO;
                 end
                 'd1:
                 begin
@@ -880,7 +887,7 @@ begin
                 end
                 default:
                 begin
-                    seg7_temp[i+5] <= SEG_RESET;
+                    seg7_temp[i+5] <= SEG_ZERO;
                 end
             endcase
         end
@@ -977,6 +984,10 @@ begin
     begin
         led <= 3'b000;
     end
+    else if(state_DONE)
+    begin
+        led <= 3'b100;
+    end
     else if(RoundEnds)
     begin
         led <= 3'b000;
@@ -991,10 +1002,6 @@ begin
         begin
             led <= 3'b010;
         end
-    end
-    else if(state_DONE)
-    begin
-        led <= 3'b100;
     end
     else
     begin

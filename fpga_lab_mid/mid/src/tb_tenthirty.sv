@@ -40,7 +40,7 @@ end
 
 //integer
 integer gap;
-
+integer step;
 initial begin
   rst_n = 1;
   set_initaial;
@@ -145,11 +145,14 @@ initial begin
   btn_r = 0;
   repeat(1)@(negedge d_clk);
   btn_m = ~btn_m;
-  repeat(gap)@(negedge d_clk);
-  btn_r = 1;
-  repeat(gap)@(negedge d_clk);
-  btn_m = ~btn_m;
-  repeat(gap)@(negedge d_clk);
+
+  for(step=0;step<32;step=step+1)
+  begin
+    repeat(gap)@(negedge d_clk);
+    btn_m = ~btn_m;
+    repeat(gap)@(negedge d_clk);
+    btn_r = ~btn_r;
+  end
 
   $finish;
 end
