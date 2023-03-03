@@ -21,7 +21,6 @@ module PN (
     output out_valid,
     output signed [31:0] out
 );
-
     //================================================================
     //   PARAMETER/INTEGER
     //================================================================
@@ -146,7 +145,7 @@ module PN (
         if (mode_POSTFIX || mode_POSTFIX_BURST) begin
             evaluation_done_f = buf_index_cnt == BUFFER_LEN - 1;
         end else if (mode_PREFIX || mode_PREFIX_BURST) begin
-            evaluation_done_f = 'd0;
+            evaluation_done_f = buf_index_cnt == 0;
         end else begin
             evaluation_done_f = 1'b0;
         end
@@ -342,7 +341,7 @@ module PN (
                 POSTFIX_BURST, POSTFIX: buf_index_cnt <= buf_index_cnt + 1;
                 default: buf_index_cnt <= buf_index_cnt;
             endcase
-        end else if (stack_PUSH || stack_POP_RESULT) begin
+        end else if (stack_PUSH || stack_POP_RESULT || stack_CALCULATION) begin
             case (modeState)
                 PREFIX_BURST, PREFIX: buf_index_cnt <= buf_index_cnt - 1;
                 POSTFIX_BURST, POSTFIX: buf_index_cnt <= buf_index_cnt + 1;
