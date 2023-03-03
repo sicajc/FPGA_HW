@@ -1,121 +1,84 @@
+`define C2Q 5
+module LIFObuffer (
+    dataIn,
 
-module LIFObuffer( dataIn,
+    dataOut,
 
-                     dataOut,
+    RW,
 
-                     RW,
+    EN,
 
-                     EN,
+    Rst,
 
-                     Rst,
+    EMPTY,
 
-                     EMPTY,
+    FULL,
 
-                     FULL,
+    Clk
 
-                     Clk
+);
 
-                   );
+    input [3:0] dataIn;
 
-  input [3:0]  dataIn;
+    input RW, EN, Rst, Clk;
+    output reg EMPTY, FULL;
 
-  input        RW,
+    output reg [3:0] dataOut;
+    parameter DEPTH = 16;
 
-               EN,
+    reg [3:0] stack_mem[0:DEPTH-1];
 
-               Rst,
+    reg [4:0] SP;
 
-               Clk;
+    integer i;
 
+    always @(posedge Clk or negedge Rst) begin
+        //synopsys_translate_off
+        #`C2Q;
+        //synopsys_translate_on
 
+        if (~Rst) begin
+            SP      = 5'd16;
+            EMPTY   = SP[4];
+            dataOut = 4'h0;
+            for (i = 0; i < DEPTH; i = i + 1) begin
+                stack_mem[i] = 'd0;
+            end
+        end else if (EN == 0);
+        else begin
+            if (~Rst == 0) begin
+                FULL = SP ? 0 : 1;
+                EMPTY = SP[4];
+                dataOut = 4'hx;
 
-  output  reg EMPTY,
+                if (FULL == 1'b0 && RW == 1'b0) begin
 
-          FULL;
+                    SP            = SP - 5'd1;
 
-  output reg [3:0] dataOut;
+                    FULL          = SP ? 0 : 1;
 
-  reg [3:0] stack_mem[0:3];
+                    EMPTY         = SP[4];
 
-  reg  [2:0] SP;
+                    stack_mem[SP] = dataIn;
 
-  integer i;
+                end else if (EMPTY == 1'b0 && RW == 1'b1) begin
 
-  always @ (posedge Clk)
+                    dataOut = stack_mem[SP];
 
-  begin
+                    stack_mem[SP] = 0;
 
-    if (EN==0)
-      ;
+                    SP = SP + 1;
 
-    else
-    begin
+                    FULL = SP ? 0 : 1;
 
-      if (Rst==1)
-      begin
+                    EMPTY = SP[4];
 
-        SP       = 3'd4;
+                end else;
 
-        EMPTY    = SP[2];
-
-        dataOut  = 4'h0;
-
-        for (i=0;i<4;i=i+1)
-        begin
-
-          stack_mem[i]= 0;
-
-        end
-
-      end
-
-      else if (Rst==0)
-      begin
-
-        FULL = SP? 0:1;
-
-        EMPTY  = SP[2];
-
-        dataOut = 4'hx;
-
-        if (FULL == 1'b0 && RW == 1'b0)
-        begin
-
-          SP            = SP-1'b1;
-
-          FULL          = SP? 0:1;
-
-          EMPTY         = SP[2];
-
-          stack_mem[SP] = dataIn;
+            end else;
 
         end
-
-        else if (EMPTY == 1'b0 && RW == 1'b1)
-        begin
-
-          dataOut  = stack_mem[SP];
-
-          stack_mem[SP] = 0;
-
-          SP  = SP+1;
-
-          FULL  = SP? 0:1;
-
-          EMPTY  = SP[2];
-
-        end
-
-        else
-          ;
-
-      end
-
-      else
-        ;
 
     end
-
-  end
 
 endmodule

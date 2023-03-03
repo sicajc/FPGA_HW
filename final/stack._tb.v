@@ -68,11 +68,11 @@ module LIFObuffer_tb;
 
     EN   = 1'b1;
 
-    Rst  = 1'b1;
+    Rst  = 1'b0;
 
     #40;
 
-    Rst     = 1'b0;
+    Rst     = 1'b1;
 
     RW      = 1'b0;
 
@@ -89,6 +89,72 @@ module LIFObuffer_tb;
     #20;
 
     dataIn = 4'h6;
+
+    #20;
+
+    dataIn = 4'h8;
+
+    #20;
+
+    dataIn = 4'h4;
+
+    #20;
+
+    dataIn = 4'h2;
+
+    #20;
+
+    dataIn = 4'h4;
+
+    #20;
+
+    dataIn = 4'h6;
+
+    #20;
+
+    dataIn = 4'h8;
+
+    #20;
+
+    dataIn = 4'h4;
+    #20;
+
+    dataIn = 4'h2;
+
+    #20;
+
+    dataIn = 4'h4;
+
+    #20;
+
+    dataIn = 4'h6;
+
+    #20;
+
+    dataIn = 4'h8;
+
+    #20;
+
+    dataIn = 4'h4;
+    #20;
+
+    dataIn = 4'h2;
+
+    #20;
+
+    dataIn = 4'h4;
+
+    #20;
+
+    dataIn = 4'h6;
+
+    #20;
+
+    dataIn = 4'h8;
+
+    #20;
+
+    dataIn = 4'h4;
 
     #20;
 

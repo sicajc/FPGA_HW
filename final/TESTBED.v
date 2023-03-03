@@ -10,17 +10,17 @@
 // Revise : 2023-02-27 13:19:54
 // Editor : sublime text4, tab size (4)
 // -----------------------------------------------------------------------------
-//#################### Write your own code location ############################## 
-`define INPUT        "./input.txt"   
-`define OUTPUT       "./output.txt"  
-`define OP           "./operator.txt"
+//#################### Write your own code location ##############################
+`define INPUT        "C:/Users/User/Desktop/FPGA_HW/final/input.txt"
+`define OUTPUT       "C:/Users/User/Desktop/FPGA_HW/final/output.txt"
+`define OP           "C:/Users/User/Desktop/FPGA_HW/final/operator.txt"
 
-//#################### Don't touch  ############################## 
+//#################### Don't touch  ##############################
 `timescale 10ns/1ps
 `define CYCLE 10
 `define RTL
 
-//`define SDFFILE    "./Netlist/PN_SYN.sdf" 
+//`define SDFFILE    "./Netlist/PN_SYN.sdf"
 /*
 `ifdef RTL
   `include "PN.v"
@@ -54,7 +54,7 @@ output reg in_valid;
 input  wire out_valid;
 input  wire signed [31:0] out;
 
-//integer 
+//integer
 integer d,o; //d:data input;o:output
 integer input_file,output_file,op_file;
 integer gap,in_num,i;
@@ -77,7 +77,7 @@ initial begin
   `ifdef GATE
       	$sdf_annotate(`SDFFILE, inst_PN);
     	$fsdbDumpfile("Netlist/PN_SYN.fsdb");
-	$fsdbDumpvars(0,"+mda"); 
+	$fsdbDumpvars(0,"+mda");
   `endif
 end
 */
@@ -142,7 +142,7 @@ initial begin
     $fclose(op_file);
     if(error == 0) YOU_PASS_task;
     else fail_task;
-end 
+end
 
 task set_initail_task;begin
     mode = 2'bx;
@@ -151,7 +151,7 @@ task set_initail_task;begin
 end
 endtask
 
-task reset_signal_task; begin 
+task reset_signal_task; begin
     @(negedge clk); rst_n=0;
     #(`CYCLE/2);
     if((out_valid !== 'd0)||(out !== 'd0)) begin
@@ -164,7 +164,7 @@ task reset_signal_task; begin
         $finish;
     end
     @(negedge clk); rst_n=1;
-end 
+end
 endtask
 
 task input_task; begin
@@ -174,7 +174,7 @@ task input_task; begin
     //input
     for(in_num=0;in_num < TIMES;in_num=in_num+1) begin
         if(out_valid!==0) begin
-            // in_valid and out_valid should not be high at the same time.   
+            // in_valid and out_valid should not be high at the same time.
             $display ("------------------------------------------------------------------------------------------------------------------------------------------------");
             $display ("                                                              fail (2)                                                                          ");
             $display ("                                          out_valid should not be raised when in_valid is high.                                                 ");
@@ -198,19 +198,19 @@ task input_task; begin
              d  = $fscanf(op_file   ,"%b",operator);
              d  = $fscanf(input_file,"%d",mode);
              d  = $fscanf(input_file,"%d",in);
-             mode_tmp = mode;  
+             mode_tmp = mode;
         end
         else begin
              mode = 2'bx;
              d  = $fscanf(op_file,"%b",operator);
-             d  = $fscanf(input_file,"%d",in); 
+             d  = $fscanf(input_file,"%d",in);
         end
         @(negedge clk);
     end
     in_valid =    0;
     operator = 1'bx;
     in       = 3'bx;
-end 
+end
 endtask
 
 task check_out; begin
@@ -225,7 +225,7 @@ task check_out; begin
     end
 end endtask
 
-task wait_out_valid ; 
+task wait_out_valid ;
 begin
     cycles = 0;
     while(out_valid !== 1)begin
@@ -243,7 +243,7 @@ begin
         @(negedge clk);
     end
     total_cycles = total_cycles + cycles;
-end 
+end
 endtask
 
 task checkans; begin
@@ -263,7 +263,7 @@ task output_task;begin
             checkans;
         end
         else begin
-            for (i=0;i<TIMES/3;i=i+1) begin  
+            for (i=0;i<TIMES/3;i=i+1) begin
                 checkans;
             end
         end
@@ -338,7 +338,7 @@ task fail_task;begin
 endtask
 
 task delay_task ; begin
-    gap = $random(seed)%3 + 2;//2~4 
+    gap = $random(seed)%3 + 2;//2~4
     repeat(gap) @(negedge clk);
 end endtask
 
