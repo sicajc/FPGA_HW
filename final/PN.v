@@ -479,7 +479,6 @@ module PN (
             result_cnt <= result_cnt + 1;
             result_buf[result_cnt] <= alu_out;
         end else if (state_SORT) begin
-
             if (mode_PREFIX_BURST) begin
                 for (i = 0; i < 4; i = i + 1) begin
                     result_buf[i] <= sorted_result_d[i];
@@ -489,9 +488,9 @@ module PN (
                     result_buf[i] <= sorted_result_d[3-i];
                 end
             end
-            result_cnt <= result_cnt - 1;
+            // result_cnt <= result_cnt - 1;, debugging result_cnt
         end else if (state_DONE) begin
-            result_cnt <= result_cnt - 1;
+            result_cnt <=  result_cnt - 1;
         end else begin
             result_cnt <= result_cnt;
             for (i = 0; i < NUM_OF_RESULT; i = i + 1) begin
