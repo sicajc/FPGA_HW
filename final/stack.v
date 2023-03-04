@@ -18,15 +18,15 @@ module LIFObuffer (
 
 );
 
-    input [3:0] dataIn;
+    input [15:0] dataIn;
 
     input RW, EN, Rst, Clk;
     output reg EMPTY, FULL;
 
-    output reg [3:0] dataOut;
+    output reg [15:0] dataOut;
     parameter DEPTH = 16;
 
-    reg [3:0] stack_mem[0:DEPTH-1];
+    reg [15:0] stack_mem[0:DEPTH-1];
 
     reg [4:0] SP;
 

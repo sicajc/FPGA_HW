@@ -10,7 +10,8 @@
 // Revise : 2023-02-27 13:19:54
 // Editor : sublime text4, tab size (4)
 // -----------------------------------------------------------------------------
-`define C2Q 5
+`define C2Q 1
+`include "two_stages_bitonic_sorter.v"
 module PN (
     input clk,
     input rst_n,
@@ -18,15 +19,16 @@ module PN (
     input operator,
     input [2:0] in,
     input in_valid,
-    output out_valid,
-    output signed [31:0] out
+    output reg out_valid,
+    output reg signed [31:0] out
 );
+
     //================================================================
     //   PARAMETER/INTEGER
     //================================================================
     //integer
     integer i;
-    parameter WORD = 4;
+    parameter WORD = 16;
     parameter BUFFER_LEN = 16;
     localparam CNT_LEN = 4;
     localparam NUM_OF_RESULT = 4;
@@ -77,7 +79,7 @@ module PN (
     reg signed [WORD-1:0] alu_buf2;
 
     reg [WORD-1:0] data_buf[0:BUFFER_LEN-1];
-    reg [WORD-1:0] result_buf[0:NUM_OF_RESULT-1];  // maximum of 4 values
+    reg signed [WORD-1:0] result_buf[0:NUM_OF_RESULT-1];  // maximum of 4 values
     reg [CNT_LEN-1:0] strLen_cnt;
     reg [CNT_LEN-1:0] buf_index_cnt;
     reg [CNT_LEN-1:0] done_cnt;
@@ -142,9 +144,9 @@ module PN (
     reg             evaluation_done_f;
 
     always @(*) begin
-        if (mode_POSTFIX || mode_POSTFIX_BURST) begin
-            evaluation_done_f = buf_index_cnt == BUFFER_LEN - 1;
-        end else if (mode_PREFIX || mode_PREFIX_BURST) begin
+        if ((mode_POSTFIX || mode_POSTFIX_BURST) && stack_CALCULATION) begin
+            evaluation_done_f = buf_index_cnt == strLen_cnt - 1;
+        end else if ((mode_PREFIX || mode_PREFIX_BURST) && stack_CALCULATION) begin
             evaluation_done_f = buf_index_cnt == 0;
         end else begin
             evaluation_done_f = 1'b0;
@@ -152,8 +154,8 @@ module PN (
     end
 
     wire timed_out_f = done_cnt == 'd30;
-    wire is_operand_f = buf_current_char[3] == 1'b0;
-    wire is_operator_f = buf_current_char[3] == 1'b1;
+    wire is_operand_f = buf_current_char[15] == 1'b0;
+    wire is_operator_f = buf_current_char[15] == 1'b1;
     wire burst_done_f = stack_CALCULATION;
 
     //================================================================
@@ -173,6 +175,8 @@ module PN (
             currentState <= nextState;
         end
     end
+
+    wire output_done_f = result_cnt == 0;
 
     always @(*) begin
         case (currentState)
@@ -197,8 +201,13 @@ module PN (
                     nextState = EVALUATION;
                 end
             end
+            SORT: begin
+                nextState = DONE;
+            end
             DONE: begin
                 if (in_valid) begin
+                    nextState = IDLE;
+                end else if (output_done_f) begin
                     nextState = IDLE;
                 end else if (timed_out_f) begin
                     nextState = IDLE;
@@ -236,22 +245,24 @@ module PN (
     //   READ DATA
     //=================================================
     always @(posedge clk or negedge rst_n) begin
+        //synopsys_translate_off
+        #`C2Q;
+        //synopsys_translate_on
         if (!rst_n) begin
             strLen_cnt <= 'd0;
 
             for (i = 0; i < BUFFER_LEN; i = i + 1) begin
                 data_buf[i] <= 'd0;
             end
+        end else if (state_DONE) begin
+            strLen_cnt <= 0;
         end else if ((state_RD_DATA || state_IDLE) && in_valid) begin
             strLen_cnt <= strLen_cnt + 1;
 
-            if(operator)
-            begin
-                data_buf[strLen_cnt] <= {1'b1,in};
-            end
-            else
-            begin
-                data_buf[strLen_cnt] <= {1'b0,in};
+            if (operator) begin
+                data_buf[strLen_cnt] <= {1'b1,12'b0,in};
+            end else begin
+                data_buf[strLen_cnt] <= {1'b0,12'b0,in};
             end
         end else begin
             strLen_cnt <= strLen_cnt;
@@ -322,9 +333,9 @@ module PN (
         end
     end
 
-    assign pop  = stackCTRnext == PERFORM_OP_POP1 || stackCTRnext == PERFORM_OP_POP2 || stackCTRnext ==PERFORM_OP_RESULT;
+    assign pop  = stackCTR == PERFORM_OP_POP1 || stackCTR == PERFORM_OP_POP2 || stackCTR ==PERFORM_OP_RESULT;
     assign push = stack_PUSH;
-	assign stack_pushed_value = buf_current_char;
+    assign stack_pushed_value = buf_current_char;
 
     //===========================
     //   PERFORM OPERATION
@@ -335,9 +346,9 @@ module PN (
         //synopsys_translate_on
         if (~rst_n) begin
             buf_index_cnt <= 'd0;
-        end else if (currentState==RD_DATA && nextState == EVALUATION) begin
-			case (modeState)
-                PREFIX_BURST, PREFIX: buf_index_cnt   <= strLen_cnt - 1;
+        end else if (currentState == RD_DATA && nextState == EVALUATION) begin
+            case (modeState)
+                PREFIX_BURST, PREFIX: buf_index_cnt <= strLen_cnt - 1;
                 POSTFIX_BURST, POSTFIX: buf_index_cnt <= buf_index_cnt + 1;
                 default: buf_index_cnt <= buf_index_cnt;
             endcase
@@ -360,25 +371,29 @@ module PN (
         #`C2Q;
         //synopsys_translate_on
         if (~rst_n) begin
-            done_cnt <= 'd0;
+            done_cnt  <= 'd0;
+            out_valid <= 'd0;
+            out       <= 'd0;
         end else if (timed_out_f) begin
-            done_cnt <= 'd0;
+            done_cnt  <= 'd0;
+            out_valid <= 'd0;
+            out       <= 'd0;
         end else if (state_DONE) begin
-            done_cnt <= done_cnt + 1;
+            done_cnt  <= done_cnt + 1;
+            out_valid <= 1'b1;
+            out    <= result_buf[result_cnt];
         end else begin
-            done_cnt <= done_cnt;
+            out_valid <= 'd0;
+            out       <= 'd0;
+            done_cnt  <= done_cnt;
         end
     end
-
-    assign out_valid = state_DONE;
-    assign out    = result_buf[result_cnt];
 
     //======================
     //  ALU
     //======================
-    always @(posedge clk or negedge rst_n)
-    begin
-		//synopsys_translate_off
+    always @(posedge clk or negedge rst_n) begin
+        //synopsys_translate_off
         #`C2Q;
         //synopsys_translate_on
         if (!rst_n) begin
@@ -398,15 +413,12 @@ module PN (
 
 
     always @(*) begin
-        //synopsys_translate_off
-        #`C2Q;
-        //synopsys_translate_on
         if (!rst_n) begin
-            alu_out   = 'd0;
+            alu_out = 'd0;
         end else if (stack_POP1) begin
-            alu_out   = alu_out;
+            alu_out = alu_out;
         end else if (stack_POP2) begin
-            alu_out   = alu_out;
+            alu_out = alu_out;
         end else if (stack_CALCULATION) begin
             case (buf_current_char[2:0])
                 ADD: begin
@@ -419,7 +431,11 @@ module PN (
                     alu_out = alu_buf1 * alu_buf2;
                 end
                 ABSOLUTE: begin
-                    alu_out = alu_buf1 + alu_buf2;
+                    if ($signed(alu_buf1 + alu_buf2) < 0) begin
+                        alu_out = -(alu_buf1 + alu_buf2);
+                    end else begin
+                        alu_out = alu_buf1 + alu_buf2;
+                    end
                 end
                 default: begin
                     alu_out = alu_out;
@@ -427,13 +443,24 @@ module PN (
             endcase
 
         end else begin
-            alu_out   = alu_out;
+            alu_out = alu_out;
         end
     end
 
-    //======================
+    //==========================
     //	   RESULT BUFFER & cnt
-    //======================
+    //==========================
+    wire signed [WORD-1:0] result_rd[0:3];
+    wire signed [WORD-1:0] sorted_result_d[0:7];
+
+    genvar idx;
+
+    generate
+        for (idx = 0; idx < 4; idx = idx + 1) begin
+            assign result_rd[idx] = result_buf[idx];
+        end
+    endgenerate
+
     always @(posedge clk or negedge rst_n) begin
         //synopsys_translate_off
         #`C2Q;
@@ -441,11 +468,30 @@ module PN (
         if (!rst_n) begin
             result_cnt <= 'd0;
             for (i = 0; i < NUM_OF_RESULT; i = i + 1) begin
-                result_buf[i] <= 'd0;
+                result_buf[i] <= 16'h0fff;
             end
-        end else if (burst_done_f) begin
-            result_cnt <= evaluation_done_f ? 0 : result_cnt + 1;
+        end else if (state_RD_DATA) begin
+            result_cnt <= 'd0;
+            for (i = 0; i < NUM_OF_RESULT; i = i + 1) begin
+                result_buf[i] <= 16'h0fff;
+            end
+        end else if (stack_CALCULATION && burst_done_f) begin
+            result_cnt <= result_cnt + 1;
             result_buf[result_cnt] <= alu_out;
+        end else if (state_SORT) begin
+
+            if (mode_PREFIX_BURST) begin
+                for (i = 0; i < 4; i = i + 1) begin
+                    result_buf[i] <= sorted_result_d[i];
+                end
+            end else if (mode_POSTFIX_BURST) begin
+                for (i = 0; i < 4; i = i + 1) begin
+                    result_buf[i] <= sorted_result_d[3-i];
+                end
+            end
+            result_cnt <= result_cnt - 1;
+        end else if (state_DONE) begin
+            result_cnt <= result_cnt - 1;
         end else begin
             result_cnt <= result_cnt;
             for (i = 0; i < NUM_OF_RESULT; i = i + 1) begin
@@ -480,6 +526,30 @@ module PN (
     //===========================
     //	 MODULE: Sorter
     //===========================
+    two_stages_bitonic_sorter #(
+        .N(WORD)
+    ) bitonics_sorter (
+        .rst_n(rst_n),
+        .clk(clk),
+        //inputs
+        .a(16'h0fff),
+        .b(16'h0fff),
+        .c(16'h0fff),
+        .d(16'h0fff),
+        .e(result_rd[0]),
+        .f(result_rd[1]),
+        .g(result_rd[2]),
+        .h(result_rd[3]),
+        //output
+        .i(sorted_result_d[0]),
+        .j(sorted_result_d[1]),
+        .k(sorted_result_d[2]),
+        .l(sorted_result_d[3]),
+        .m(sorted_result_d[4]),
+        .n(sorted_result_d[5]),
+        .o(sorted_result_d[6]),
+        .p(sorted_result_d[7])
+    );
 
 
 
