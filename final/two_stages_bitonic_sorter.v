@@ -194,7 +194,6 @@ module two_stages_bitonic_sorter #(
     wire signed [N-1:0] sort_lv2_4_min;
     wire signed [N-1:0] sort_lv2_4_max;
 
-
     BE #(
         .N(N)
     ) sort_lv1_1 (

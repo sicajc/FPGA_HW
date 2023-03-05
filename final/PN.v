@@ -29,7 +29,7 @@ module PN (
     //================================================================
     //integer
     integer i;
-    parameter WORD = 8;
+    parameter WORD = 16;
     parameter BUFFER_LEN = 16;
     localparam CNT_LEN = 4;
     localparam NUM_OF_RESULT = 4;
@@ -88,8 +88,6 @@ module PN (
 
     reg [CNT_LEN-1:0] result_cnt;
 
-    reg [2:0] operater_type;
-
     //======================
     //   FSM
     //======================
@@ -102,8 +100,6 @@ module PN (
     //======================
     wire            push;
     wire            pop;
-    wire            empty;
-    wire            full;
     wire [WORD-1:0] stack_popped_value;
     wire [WORD-1:0] stack_pushed_value;
     wire            en = push || pop;
@@ -551,10 +547,6 @@ module PN (
         .EN(en),
 
         .Rst(rst_n),
-
-        .EMPTY(empty),
-
-        .FULL(full),
 
         .Clk(clk)
 
