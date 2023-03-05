@@ -1,24 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7k70tfbv676-1" LaunchTime="1678001048">
-  <File Type="PA-TCL" Name="TESTBED.tcl"/>
-  <File Type="RDS-PROPCONSTRS" Name="TESTBED_drc_synth.rpt"/>
-  <File Type="REPORTS-TCL" Name="TESTBED_reports.tcl"/>
-  <File Type="RDS-RDS" Name="TESTBED.vds"/>
-  <File Type="RDS-UTIL" Name="TESTBED_utilization_synth.rpt"/>
-  <File Type="RDS-UTIL-PB" Name="TESTBED_utilization_synth.pb"/>
-  <File Type="RDS-DCP" Name="TESTBED.dcp"/>
-  <File Type="VDS-TIMINGSUMMARY" Name="TESTBED_timing_summary_synth.rpt"/>
-  <File Type="VDS-TIMING-PB" Name="TESTBED_timing_summary_synth.pb"/>
+<GenRun Id="synth_1" LaunchPart="xc7k70tfbv676-1" LaunchTime="1678006067" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/TESTBED.dcp">
+  <File Type="PA-TCL" Name="PN.tcl"/>
+  <File Type="REPORTS-TCL" Name="PN_reports.tcl"/>
+  <File Type="RDS-RDS" Name="PN.vds"/>
+  <File Type="RDS-DCP" Name="PN.dcp"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PPRDIR/../BE.v">
-      <FileInfo>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
-    <File Path="$PPRDIR/../two_stages_bitonic_sorter.v">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
@@ -32,14 +20,14 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PPRDIR/../PN.v">
+    <File Path="$PPRDIR/../two_stages_bitonic_sorter.v">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PPRDIR/../TESTBED.v">
+    <File Path="$PPRDIR/../PN.v">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
@@ -48,7 +36,7 @@
     </File>
     <Config>
       <Option Name="DesignMode" Val="RTL"/>
-      <Option Name="TopModule" Val="TESTBED"/>
+      <Option Name="TopModule" Val="PN"/>
       <Option Name="TopAutoSet" Val="TRUE"/>
     </Config>
   </FileSet>
@@ -60,14 +48,20 @@
   </FileSet>
   <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1">
     <Filter Type="Utils"/>
+    <File Path="$PSRCDIR/utils_1/imports/synth_1/TESTBED.dcp">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedInSteps" Val="synth_1"/>
+        <Attr Name="AutoDcp" Val="1"/>
+      </FileInfo>
+    </File>
     <Config>
       <Option Name="TopAutoSet" Val="TRUE"/>
     </Config>
   </FileSet>
   <Strategy Version="1" Minor="2">
-    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-      <Desc>Vivado Synthesis Defaults</Desc>
-    </StratHandle>
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
     <Step Id="synth_design"/>
   </Strategy>
 </GenRun>

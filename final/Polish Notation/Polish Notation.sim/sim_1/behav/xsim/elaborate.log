@@ -1,71 +1,26 @@
 Vivado Simulator v2022.1
 Copyright 1986-1999, 2001-2022 Xilinx, Inc. All Rights Reserved.
-Running: C:/Xilinx/Vivado/2022.1/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot TESTBED_behav xil_defaultlib.TESTBED xil_defaultlib.glbl -log elaborate.log 
+Running: C:/Xilinx/Vivado/2022.1/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot PN_behav xil_defaultlib.PN xil_defaultlib.glbl -log elaborate.log 
 Using 2 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3091] actual bit length 8 differs from formal bit length 16 for port 'dataIn' [C:/Users/User/Desktop/FPGA_HW/final/PN.v:540]
+WARNING: [VRFC 10-3091] actual bit length 8 differs from formal bit length 16 for port 'dataOut' [C:/Users/User/Desktop/FPGA_HW/final/PN.v:542]
+WARNING: [VRFC 10-3091] actual bit length 16 differs from formal bit length 8 for port 'a' [C:/Users/User/Desktop/FPGA_HW/final/PN.v:567]
+WARNING: [VRFC 10-3091] actual bit length 16 differs from formal bit length 8 for port 'b' [C:/Users/User/Desktop/FPGA_HW/final/PN.v:568]
+WARNING: [VRFC 10-3091] actual bit length 16 differs from formal bit length 8 for port 'c' [C:/Users/User/Desktop/FPGA_HW/final/PN.v:569]
+WARNING: [VRFC 10-3091] actual bit length 16 differs from formal bit length 8 for port 'd' [C:/Users/User/Desktop/FPGA_HW/final/PN.v:570]
+WARNING: [VRFC 10-3705] select index 15 into 'buf_current_char' is out of bounds [C:/Users/User/Desktop/FPGA_HW/final/PN.v:157]
+WARNING: [VRFC 10-3705] select index 15 into 'buf_current_char' is out of bounds [C:/Users/User/Desktop/FPGA_HW/final/PN.v:158]
 Completed static elaboration
 Starting simulation data flow analysis
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/PN.v" Line 16. Module PN doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/stack.v" Line 2. Module LIFObuffer doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/two_stages_bitonic_sorter.v" Line 2. Module two_stages_bitonic_sorter(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/PN.v" Line 16. Module PN doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/stack.v" Line 2. Module LIFObuffer doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/two_stages_bitonic_sorter.v" Line 2. Module two_stages_bitonic_sorter(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "C:/Users/User/Desktop/FPGA_HW/final/BE.v" Line 1. Module BE(N=16) doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4100] "C:/Users/User/Desktop/FPGA_HW/final/Polish Notation/Polish Notation.sim/sim_1/behav/xsim/glbl.v" Line 6. Module glbl has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "C:/Users/User/Desktop/FPGA_HW/final/Polish Notation/Polish Notation.sim/sim_1/behav/xsim/glbl.v" Line 6. Module glbl has a timescale but at least one module in design doesn't have timescale.
 Completed simulation data flow analysis
 Time Resolution for simulation is 1ps
 Compiling module xil_defaultlib.LIFObuffer
-Compiling module xil_defaultlib.BE(N=16)
-Compiling module xil_defaultlib.two_stages_bitonic_sorter(N=16)
+Compiling module xil_defaultlib.BE(N=8)
+Compiling module xil_defaultlib.two_stages_bitonic_sorter(N=8)
 Compiling module xil_defaultlib.PN
-Compiling module xil_defaultlib.TESTBED
 Compiling module xil_defaultlib.glbl
-Built simulation snapshot TESTBED_behav
+Built simulation snapshot PN_behav

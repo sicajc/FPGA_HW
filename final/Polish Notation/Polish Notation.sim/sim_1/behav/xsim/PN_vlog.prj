@@ -1,8 +1,9 @@
 # compile verilog/system verilog design source files
 verilog xil_defaultlib  \
-"../../../../../PN.v" \
+"../../../../../BE.v" \
 "../../../../../stack.v" \
-"../../../../../TESTBED.v" \
+"../../../../../two_stages_bitonic_sorter.v" \
+"../../../../../PN.v" \
 
 # compile glbl module
 verilog xil_defaultlib "glbl.v"

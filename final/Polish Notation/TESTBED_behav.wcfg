@@ -11,22 +11,22 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="77.660000 us"></ZoomStartTime>
-      <ZoomEndTime time="105.080001 us"></ZoomEndTime>
-      <Cursor1Time time="100.500000 us"></Cursor1Time>
+      <ZoomStartTime time="1,837,102.901 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,841,083.373 ns"></ZoomEndTime>
+      <Cursor1Time time="1,838,998.778 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="340"></NameColumnWidth>
       <ValueColumnWidth column_width="155"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="37" />
+   <WVObjectSize size="36" />
    <wave_markers>
-      <marker time="9199669" label="" />
-      <marker time="1950000" label="" />
-      <marker time="12712636" label="" />
-      <marker time="13500000" label="" />
-      <marker time="16050000" label="" />
+      <marker time="2064772339" label="" />
    </wave_markers>
+   <wvobject fp_name="/TESTBED/pat" type="array">
+      <obj_property name="ElementShortName">pat[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pat[31:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/TESTBED/inst_PN/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -122,78 +122,14 @@
          <obj_property name="ElementShortName">stack_PUSH</obj_property>
          <obj_property name="ObjectShortName">stack_PUSH</obj_property>
       </wvobject>
-      <wvobject fp_name="/TESTBED/inst_PN/stack_POP_RESULT" type="logic">
-         <obj_property name="ElementShortName">stack_POP_RESULT</obj_property>
-         <obj_property name="ObjectShortName">stack_POP_RESULT</obj_property>
+      <wvobject fp_name="/TESTBED/inst_PN/stack_PUSH_MID_RESULT" type="logic">
+         <obj_property name="ElementShortName">stack_PUSH_MID_RESULT</obj_property>
+         <obj_property name="ObjectShortName">stack_PUSH_MID_RESULT</obj_property>
       </wvobject>
       <wvobject fp_name="/TESTBED/inst_PN/stack_CALCULATION" type="logic">
          <obj_property name="ElementShortName">stack_CALCULATION</obj_property>
          <obj_property name="ObjectShortName">stack_CALCULATION</obj_property>
       </wvobject>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/rst_n" type="logic">
-      <obj_property name="ElementShortName">rst_n</obj_property>
-      <obj_property name="ObjectShortName">rst_n</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/result_cnt" type="array">
-      <obj_property name="ElementShortName">result_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">result_cnt[3:0]</obj_property>
-      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/result_buf" type="array">
-      <obj_property name="ElementShortName">result_buf[0:3][15:0]</obj_property>
-      <obj_property name="ObjectShortName">result_buf[0:3][15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/alu_out" type="array">
-      <obj_property name="ElementShortName">alu_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_out[15:0]</obj_property>
-      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/alu_buf1" type="array">
-      <obj_property name="ElementShortName">alu_buf1[15:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_buf1[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/alu_buf2" type="array">
-      <obj_property name="ElementShortName">alu_buf2[15:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_buf2[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/stack_pushed_value" type="array">
-      <obj_property name="ElementShortName">stack_pushed_value[15:0]</obj_property>
-      <obj_property name="ObjectShortName">stack_pushed_value[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/stack_popped_value" type="array">
-      <obj_property name="ElementShortName">stack_popped_value[15:0]</obj_property>
-      <obj_property name="ObjectShortName">stack_popped_value[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/data_buf" type="array">
-      <obj_property name="ElementShortName">data_buf[0:15][15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_buf[0:15][15:0]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/buf_current_char" type="array">
-      <obj_property name="ElementShortName">buf_current_char[15:0]</obj_property>
-      <obj_property name="ObjectShortName">buf_current_char[15:0]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/data_buf" type="array">
-      <obj_property name="ElementShortName">data_buf[0:15][15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_buf[0:15][15:0]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/TESTBED/inst_PN/burst_done_f" type="logic">
       <obj_property name="ElementShortName">burst_done_f</obj_property>
@@ -207,23 +143,75 @@
       <obj_property name="ElementShortName">is_operator_f</obj_property>
       <obj_property name="ObjectShortName">is_operator_f</obj_property>
    </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/evaluation_done_f" type="logic">
+      <obj_property name="ElementShortName">evaluation_done_f</obj_property>
+      <obj_property name="ObjectShortName">evaluation_done_f</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/timed_out_f" type="logic">
+      <obj_property name="ElementShortName">timed_out_f</obj_property>
+      <obj_property name="ObjectShortName">timed_out_f</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/rst_n" type="logic">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/alu_out" type="array">
+      <obj_property name="ElementShortName">alu_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_out[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/result_buf" type="array">
+      <obj_property name="ElementShortName">result_buf[0:3][15:0]</obj_property>
+      <obj_property name="ObjectShortName">result_buf[0:3][15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/buf_index_cnt" type="array">
+      <obj_property name="ElementShortName">buf_index_cnt[3:0]</obj_property>
+      <obj_property name="ObjectShortName">buf_index_cnt[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/alu_buf1" type="array">
+      <obj_property name="ElementShortName">alu_buf1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_buf1[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/alu_buf2" type="array">
+      <obj_property name="ElementShortName">alu_buf2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_buf2[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/stack_pushed_value" type="array">
+      <obj_property name="ElementShortName">stack_pushed_value[15:0]</obj_property>
+      <obj_property name="ObjectShortName">stack_pushed_value[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/buf_current_char" type="array">
+      <obj_property name="ElementShortName">buf_current_char[15:0]</obj_property>
+      <obj_property name="ObjectShortName">buf_current_char[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/stack_popped_value" type="array">
+      <obj_property name="ElementShortName">stack_popped_value[15:0]</obj_property>
+      <obj_property name="ObjectShortName">stack_popped_value[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
    <wvobject fp_name="/TESTBED/inst_PN/strLen_cnt" type="array">
       <obj_property name="ElementShortName">strLen_cnt[3:0]</obj_property>
       <obj_property name="ObjectShortName">strLen_cnt[3:0]</obj_property>
       <obj_property name="CustomSignalColor">#800080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/buf_index_cnt" type="array">
-      <obj_property name="ElementShortName">buf_index_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">buf_index_cnt[3:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/TESTBED/inst_PN/done_cnt" type="array">
       <obj_property name="ElementShortName">done_cnt[3:0]</obj_property>
       <obj_property name="ObjectShortName">done_cnt[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/burst_cnt" type="array">
-      <obj_property name="ElementShortName">burst_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">burst_cnt[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/TESTBED/inst_PN/operater_type" type="array">
       <obj_property name="ElementShortName">operater_type[2:0]</obj_property>
@@ -294,16 +282,18 @@
       <obj_property name="ElementShortName">rw</obj_property>
       <obj_property name="ObjectShortName">rw</obj_property>
    </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/evaluation_done_f" type="logic">
-      <obj_property name="ElementShortName">evaluation_done_f</obj_property>
-      <obj_property name="ObjectShortName">evaluation_done_f</obj_property>
-   </wvobject>
-   <wvobject fp_name="/TESTBED/inst_PN/timed_out_f" type="logic">
-      <obj_property name="ElementShortName">timed_out_f</obj_property>
-      <obj_property name="ObjectShortName">timed_out_f</obj_property>
-   </wvobject>
    <wvobject fp_name="/TESTBED/inst_PN/stack/dataIn" type="array">
       <obj_property name="ElementShortName">dataIn[15:0]</obj_property>
       <obj_property name="ObjectShortName">dataIn[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/data_buf" type="array">
+      <obj_property name="ElementShortName">data_buf[0:15][15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_buf[0:15][15:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TESTBED/inst_PN/data_buf" type="array">
+      <obj_property name="ElementShortName">data_buf[0:15][15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_buf[0:15][15:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
 </wave_config>

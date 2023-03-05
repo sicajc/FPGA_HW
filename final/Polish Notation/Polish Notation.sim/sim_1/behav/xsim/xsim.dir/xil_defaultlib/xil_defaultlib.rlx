@@ -2,9 +2,9 @@
 2020.2
 Apr 18 2022
 16:05:34
-C:/Users/User/Desktop/FPGA_HW/final/BE.v,1677942292,verilog,,,,BE,,,,,,,,
+C:/Users/User/Desktop/FPGA_HW/final/BE.v,1677942292,verilog,,C:/Users/User/Desktop/FPGA_HW/final/stack.v,,BE,,,,,,,,
 C:/Users/User/Desktop/FPGA_HW/final/PN.v,1678000549,verilog,,C:/Users/User/Desktop/FPGA_HW/final/stack.v,C:/Users/User/Desktop/FPGA_HW/final/two_stages_bitonic_sorter.v;C:/Users/User/Desktop/FPGA_HW/final/stack.v,PN,,,,,,,,
 C:/Users/User/Desktop/FPGA_HW/final/Polish Notation/Polish Notation.sim/sim_1/behav/xsim/glbl.v,1649976174,verilog,,,,glbl,,,,,,,,
 C:/Users/User/Desktop/FPGA_HW/final/TESTBED.v,1677993091,verilog,,,,TESTBED,,,,,,,,
-C:/Users/User/Desktop/FPGA_HW/final/stack.v,1677947946,verilog,,C:/Users/User/Desktop/FPGA_HW/final/TESTBED.v,,LIFObuffer,,,,,,,,
-C:/Users/User/Desktop/FPGA_HW/final/two_stages_bitonic_sorter.v,1677942535,verilog,,,C:/Users/User/Desktop/FPGA_HW/final/BE.v,two_stages_bitonic_sorter,,,,,,,,
+C:/Users/User/Desktop/FPGA_HW/final/stack.v,1677947946,verilog,,C:/Users/User/Desktop/FPGA_HW/final/two_stages_bitonic_sorter.v,,LIFObuffer,,,,,,,,
+C:/Users/User/Desktop/FPGA_HW/final/two_stages_bitonic_sorter.v,1678009140,verilog,,C:/Users/User/Desktop/FPGA_HW/final/PN.v,C:/Users/User/Desktop/FPGA_HW/final/BE.v,two_stages_bitonic_sorter,,,,,,,,

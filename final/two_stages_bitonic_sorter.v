@@ -1,4 +1,3 @@
-`include "BE.v"
 module two_stages_bitonic_sorter #(
     parameter N = 7
 ) (
@@ -155,14 +154,25 @@ module two_stages_bitonic_sorter #(
     );
 
     always @(posedge clk or negedge rst_n) begin
-        bitonic_seq_reg[0] <= !rst_n ? 'd0 : lv3_1_min;
-        bitonic_seq_reg[1] <= !rst_n ? 'd0 : lv3_1_max;
-        bitonic_seq_reg[2] <= !rst_n ? 'd0 : lv3_2_min;
-        bitonic_seq_reg[3] <= !rst_n ? 'd0 : lv3_2_max;
-        bitonic_seq_reg[4] <= !rst_n ? 'd0 : lv3_3_max;
-        bitonic_seq_reg[5] <= !rst_n ? 'd0 : lv3_3_min;
-        bitonic_seq_reg[6] <= !rst_n ? 'd0 : lv3_4_max;
-        bitonic_seq_reg[7] <= !rst_n ? 'd0 : lv3_4_min;
+        if (!rst_n) begin
+            bitonic_seq_reg[0] <= 'd0;
+            bitonic_seq_reg[1] <= 'd0;
+            bitonic_seq_reg[2] <= 'd0;
+            bitonic_seq_reg[3] <= 'd0;
+            bitonic_seq_reg[4] <= 'd0;
+            bitonic_seq_reg[5] <= 'd0;
+            bitonic_seq_reg[6] <= 'd0;
+            bitonic_seq_reg[7] <= 'd0;
+        end else begin
+            bitonic_seq_reg[0] <= lv3_1_min;
+            bitonic_seq_reg[1] <= lv3_1_max;
+            bitonic_seq_reg[2] <= lv3_2_min;
+            bitonic_seq_reg[3] <= lv3_2_max;
+            bitonic_seq_reg[4] <= lv3_3_max;
+            bitonic_seq_reg[5] <= lv3_3_min;
+            bitonic_seq_reg[6] <= lv3_4_max;
+            bitonic_seq_reg[7] <= lv3_4_min;
+        end
     end
 
     //Bitonic sort process
