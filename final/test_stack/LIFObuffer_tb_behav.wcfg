@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="LIFObuffer_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="LIFObuffer_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="374.155 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,030.656 ns"></ZoomEndTime>
+      <Cursor1Time time="673.655 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="340"></NameColumnWidth>
+      <ValueColumnWidth column_width="150"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="12" />
+   <wvobject fp_name="/LIFObuffer_tb/uut/dataIn" type="array">
+      <obj_property name="ElementShortName">dataIn[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dataIn[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/Clk" type="logic">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/RW" type="logic">
+      <obj_property name="ElementShortName">RW</obj_property>
+      <obj_property name="ObjectShortName">RW</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/EN" type="logic">
+      <obj_property name="ElementShortName">EN</obj_property>
+      <obj_property name="ObjectShortName">EN</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/Rst" type="logic">
+      <obj_property name="ElementShortName">Rst</obj_property>
+      <obj_property name="ObjectShortName">Rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/dataOut" type="array">
+      <obj_property name="ElementShortName">dataOut[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dataOut[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/stack_mem" type="array">
+      <obj_property name="ElementShortName">stack_mem[0:15][15:0]</obj_property>
+      <obj_property name="ObjectShortName">stack_mem[0:15][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/SP" type="array">
+      <obj_property name="ElementShortName">SP[4:0]</obj_property>
+      <obj_property name="ObjectShortName">SP[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/EMPTY" type="logic">
+      <obj_property name="ElementShortName">EMPTY</obj_property>
+      <obj_property name="ObjectShortName">EMPTY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/FULL" type="logic">
+      <obj_property name="ElementShortName">FULL</obj_property>
+      <obj_property name="ObjectShortName">FULL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LIFObuffer_tb/uut/DEPTH" type="array">
+      <obj_property name="ElementShortName">DEPTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DEPTH[31:0]</obj_property>
+   </wvobject>
+</wave_config>

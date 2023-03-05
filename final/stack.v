@@ -1,81 +1,47 @@
 `define C2Q 5
-module LIFObuffer (
-    dataIn,
-
-    dataOut,
-
-    RW,
-
-    EN,
-
-    Rst,
-
-    Clk
-
+module LIFO (
+    in,
+    full,
+    empty,
+    clk,
+    rst_n,
+    wn,
+    rn,
+    out
 );
+    parameter DATA_WIDTH = 16;
+    parameter STACK_DEPTH = 16;
 
-    input [15:0] dataIn;
+    input [DATA_WIDTH-1:0] in;
+    input clk, rst_n, wn, rn;
+    output reg [DATA_WIDTH-1:0] out;
+    output full, empty;
 
-    input RW, EN, Rst, Clk;
-
-    output reg [15:0] dataOut;
-    parameter DEPTH = 16;
-
-    reg [15:0] stack_mem[0:DEPTH-1];
-
-    reg [4:0] SP;
-
-    reg EMPTY, FULL;
-
+    reg [3:0] sp;
+    reg [DATA_WIDTH-1:0] memory[0:STACK_DEPTH-1];
     integer i;
 
-    always @(posedge Clk or negedge Rst) begin
-        //synopsys_translate_off
-        #`C2Q;
-        //synopsys_translate_on
+    assign full  = (sp == 4'b1111) ? 1 : 0;
+    assign empty = (sp == 4'b0000) ? 1 : 0;
 
-        if (~Rst) begin
-            SP      = 5'd16;
-            EMPTY   = SP[4];
-            dataOut = 4'h0;
-            for (i = 0; i < DEPTH; i = i + 1) begin
-                stack_mem[i] = 'd0;
-            end
-        end else if (EN == 0);
-        else begin
-            if (~Rst == 0) begin
-                FULL = SP ? 0 : 1;
-                EMPTY = SP[4];
-                dataOut = 4'hx;
-
-                if (FULL == 1'b0 && RW == 1'b0) begin
-
-                    SP            = SP - 5'd1;
-
-                    FULL          = SP ? 0 : 1;
-
-                    EMPTY         = SP[4];
-
-                    stack_mem[SP] = dataIn;
-
-                end else if (EMPTY == 1'b0 && RW == 1'b1) begin
-
-                    dataOut = stack_mem[SP];
-
-                    stack_mem[SP] = 0;
-
-                    SP = SP + 1;
-
-                    FULL = SP ? 0 : 1;
-
-                    EMPTY = SP[4];
-
-                end else;
-
-            end else;
-
-        end
-
+    always @(*) begin
+            out = memory[sp];
     end
 
+    always @(posedge clk or negedge rst_n) begin
+          //synopsys_translate_off
+        #`C2Q;
+        //synopsys_translate_on
+        if (~rst_n) begin
+            for (i = 0; i < STACK_DEPTH; i = i + 1) begin
+                memory[i] <= 'd0;
+            end
+            sp <= 1;
+        end else if (wn & !full) begin
+            memory[sp] <= in;
+            sp <= sp + 1;
+        end else if (rn & !empty) begin
+            sp <= sp - 1;
+        end
+    end
 endmodule

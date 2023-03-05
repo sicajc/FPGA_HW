@@ -5,7 +5,7 @@ module LIFObuffer_tb;
 
   // Inputs
 
-  reg [3:0] dataIn;
+  reg [15:0] dataIn;
 
   reg RW;
 
@@ -17,7 +17,7 @@ module LIFObuffer_tb;
 
   // Outputs
 
-  wire [3:0] dataOut;
+  wire [15:0] dataOut;
 
   wire EMPTY;
 
@@ -50,7 +50,7 @@ module LIFObuffer_tb;
 
     // Initialize Inputs
 
-    dataIn  = 4'h0;
+    dataIn  = 4'h3;
 
     RW  = 1'b0;
 
@@ -76,7 +76,7 @@ module LIFObuffer_tb;
 
     RW      = 1'b0;
 
-    dataIn  = 4'h0;
+    dataIn  = 4'd10;
 
     #20;
 

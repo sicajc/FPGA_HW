@@ -10,7 +10,7 @@
 // Revise : 2023-03-05 13:19:54
 // Editor : vscode , tab size (4)
 // -----------------------------------------------------------------------------
-`define C2Q 1
+`define C2Q 5
 `include "two_stages_bitonic_sorter.v"
 `include "stack.v"
 module PN (
@@ -85,7 +85,6 @@ module PN (
     reg [CNT_LEN-1:0] buf_index_cnt;
     reg [CNT_LEN-1:0] done_cnt;
     reg [CNT_LEN-1:0] result_reversed_cnt;
-
     reg [CNT_LEN-1:0] result_cnt;
 
     //======================
@@ -102,8 +101,8 @@ module PN (
     wire            pop;
     wire [WORD-1:0] stack_popped_value;
     wire [WORD-1:0] stack_pushed_value;
-    wire            en = push || pop;
-    wire            rw = pop;
+    wire            wn = push;
+    wire            rn = pop;
 
     //======================
     //   state indicators
@@ -536,26 +535,26 @@ module PN (
     //======================
     //	   MODULE: STACK
     //======================
-    LIFObuffer stack (
+    wire full;
+    wire empty;
 
-        .dataIn(stack_pushed_value),
-
-        .dataOut(stack_popped_value),
-
-        .RW(rw),
-
-        .EN(en),
-
-        .Rst(rst_n),
-
-        .Clk(clk)
-
+    LIFO stack (
+        .in(stack_pushed_value),
+        .clk(clk),
+        .rst_n(rst_n),
+        .wn(wn),
+        .rn(rn),
+        .out(stack_popped_value),
+        .full(full),
+        .empty(empty)
     );
+
 
     //===========================
     //	 MODULE: Sorter
     //===========================
-    two_stages_bitonic_sorter #(
+
+    eight_value_bitonic_sorter #(
         .N(WORD)
     ) bitonics_sorter (
         .rst_n(rst_n),

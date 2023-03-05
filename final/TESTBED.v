@@ -16,7 +16,6 @@
 `define OP           "C:/Users/User/Desktop/FPGA_HW/final/operator.txt"
 
 //#################### Don't touch  ##############################
-`timescale 10ns/1ps
 `define CYCLE 10
 `define RTL
 

@@ -1,0 +1,4 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/User/Desktop/FPGA_HW/final/stack.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module LIFObuffer
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/User/Desktop/FPGA_HW/final/stack._tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module LIFObuffer_tb
