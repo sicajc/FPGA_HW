@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------------
 `define C2Q 1
 `include "two_stages_bitonic_sorter.v"
+`include "stack.v"
 module PN (
     input clk,
     input rst_n,
@@ -83,7 +84,7 @@ module PN (
     reg [CNT_LEN-1:0] strLen_cnt;
     reg [CNT_LEN-1:0] buf_index_cnt;
     reg [CNT_LEN-1:0] done_cnt;
-    reg [CNT_LEN-1:0] burst_cnt;
+    reg [CNT_LEN-1:0] result_reversed_cnt;
 
     reg [CNT_LEN-1:0] result_cnt;
 
@@ -195,8 +196,10 @@ module PN (
                 end
             end
             EVALUATION: begin
-                if (evaluation_done_f) begin
+                if (evaluation_done_f && (mode_POSTFIX_BURST || mode_PREFIX_BURST)) begin
                     nextState = SORT;
+                end else if (evaluation_done_f && (mode_PREFIX || mode_POSTFIX)) begin
+                    nextState = DONE;
                 end else begin
                     nextState = EVALUATION;
                 end
@@ -260,9 +263,9 @@ module PN (
             strLen_cnt <= strLen_cnt + 1;
 
             if (operator) begin
-                data_buf[strLen_cnt] <= {1'b1,12'b0,in};
+                data_buf[strLen_cnt] <= {1'b1, 12'b0, in};
             end else begin
-                data_buf[strLen_cnt] <= {1'b0,12'b0,in};
+                data_buf[strLen_cnt] <= {1'b0, 12'b0, in};
             end
         end else begin
             strLen_cnt <= strLen_cnt;
@@ -324,7 +327,13 @@ module PN (
                     stackCTRnext = PERFORM_CALCULATION;
                 end
                 PERFORM_CALCULATION: begin
-                    stackCTRnext = DET_TYPE;
+                    if (mode_POSTFIX_BURST || mode_PREFIX_BURST) begin
+                        stackCTRnext = DET_TYPE;
+                    end else if (evaluation_done_f) begin
+                        stackCTRnext = DET_TYPE;
+                    end else begin
+                        stackCTRnext = PERFORM_OP_PUSH; // For postfix and prefix push the value back to stack.
+                    end
                 end
                 default: begin
                     stackCTRnext = DET_TYPE;
@@ -333,9 +342,9 @@ module PN (
         end
     end
 
-    assign pop  = stackCTR == PERFORM_OP_POP1 || stackCTR == PERFORM_OP_POP2 || stackCTR ==PERFORM_OP_RESULT;
+    assign pop  = stackCTRnext == PERFORM_OP_POP1 || stackCTRnext == PERFORM_OP_POP2 || stackCTRnext ==PERFORM_OP_RESULT;
     assign push = stack_PUSH;
-    assign stack_pushed_value = buf_current_char;
+    assign stack_pushed_value = (stack_CALCULATION && stackCTRnext == PERFORM_OP_PUSH) ? alu_out : buf_current_char ;
 
     //===========================
     //   PERFORM OPERATION
@@ -346,10 +355,12 @@ module PN (
         //synopsys_translate_on
         if (~rst_n) begin
             buf_index_cnt <= 'd0;
+        end else if (state_DONE) begin
+            buf_index_cnt <= 0;
         end else if (currentState == RD_DATA && nextState == EVALUATION) begin
             case (modeState)
                 PREFIX_BURST, PREFIX: buf_index_cnt <= strLen_cnt - 1;
-                POSTFIX_BURST, POSTFIX: buf_index_cnt <= buf_index_cnt + 1;
+                POSTFIX_BURST, POSTFIX: buf_index_cnt <= buf_index_cnt;
                 default: buf_index_cnt <= buf_index_cnt;
             endcase
         end else if (stack_PUSH || stack_POP_RESULT || stack_CALCULATION) begin
@@ -370,6 +381,22 @@ module PN (
         //synopsys_translate_off
         #`C2Q;
         //synopsys_translate_on
+        // Used to counter in a reversed way during done state for POST_FIX
+        if (~rst_n) begin
+            result_reversed_cnt <= 0;
+        end else if (state_RD_DATA) begin
+            result_reversed_cnt <= 0;
+        end else if (state_DONE) begin
+            result_reversed_cnt <= result_reversed_cnt + 1;
+        end else begin
+            result_reversed_cnt <= result_reversed_cnt;
+        end
+    end
+
+    always @(posedge clk or negedge rst_n) begin
+        //synopsys_translate_off
+        #`C2Q;
+        //synopsys_translate_on
         if (~rst_n) begin
             done_cnt  <= 'd0;
             out_valid <= 'd0;
@@ -381,7 +408,13 @@ module PN (
         end else if (state_DONE) begin
             done_cnt  <= done_cnt + 1;
             out_valid <= 1'b1;
-            out    <= result_buf[result_cnt];
+            if (mode_PREFIX_BURST) begin
+                out <= result_buf[result_cnt];
+            end else if (mode_POSTFIX_BURST) begin
+                out <= result_buf[result_reversed_cnt];
+            end else begin
+                out <= out;
+            end
         end else begin
             out_valid <= 'd0;
             out       <= 'd0;
@@ -425,7 +458,11 @@ module PN (
                     alu_out = alu_buf1 + alu_buf2;
                 end
                 SUBTRACT: begin
-                    alu_out = alu_buf1 - alu_buf2;
+                    if (mode_POSTFIX || mode_POSTFIX_BURST) begin
+                        alu_out = alu_buf2 - alu_buf1;
+                    end else begin
+                        alu_out = alu_buf1 - alu_buf2;
+                    end
                 end
                 MULT: begin
                     alu_out = alu_buf1 * alu_buf2;
@@ -479,18 +516,12 @@ module PN (
             result_cnt <= result_cnt + 1;
             result_buf[result_cnt] <= alu_out;
         end else if (state_SORT) begin
-            if (mode_PREFIX_BURST) begin
-                for (i = 0; i < 4; i = i + 1) begin
-                    result_buf[i] <= sorted_result_d[i];
-                end
-            end else if (mode_POSTFIX_BURST) begin
-                for (i = 0; i < 4; i = i + 1) begin
-                    result_buf[i] <= sorted_result_d[3-i];
-                end
+            for (i = 0; i < 4; i = i + 1) begin
+                result_buf[i] <= sorted_result_d[i];
             end
-            // result_cnt <= result_cnt - 1;, debugging result_cnt
+            result_cnt <= result_cnt - 1;
         end else if (state_DONE) begin
-            result_cnt <=  result_cnt - 1;
+            result_cnt <= result_cnt - 1;
         end else begin
             result_cnt <= result_cnt;
             for (i = 0; i < NUM_OF_RESULT; i = i + 1) begin
