@@ -4,11 +4,11 @@
 // -----------------------------------------------------------------------------
 // ©Communication IC & Signal Processing Lab 716
 // -----------------------------------------------------------------------------
-// Author : HSUAN-YU LIN
+// Author : JACKY-YEH
 // File   : PN.v
-// Create : 2023-02-27 13:19:54
-// Revise : 2023-02-27 13:19:54
-// Editor : sublime text4, tab size (4)
+// Create : 2023-03-03 15:19:54
+// Revise : 2023-03-05 13:19:54
+// Editor : vscode , tab size (4)
 // -----------------------------------------------------------------------------
 `define C2Q 1
 `include "two_stages_bitonic_sorter.v"
@@ -62,7 +62,7 @@ module PN (
     localparam PERFORM_OP_POP2 = 'd2;
     localparam PERFORM_OP_PUSH = 'd3;
     localparam PERFORM_CALCULATION = 'd4;
-    localparam PERFORM_OP_RESULT = 'd5;
+    localparam PUSH_MID_RESULT = 'd5;
 
     //======================
     //   ALU type
@@ -128,7 +128,7 @@ module PN (
     wire            stack_POP1 = stackCTR == PERFORM_OP_POP1;
     wire            stack_POP2 = stackCTR == PERFORM_OP_POP2;
     wire            stack_PUSH = stackCTR == PERFORM_OP_PUSH;
-    wire            stack_POP_RESULT = stackCTR == PERFORM_OP_RESULT;
+    wire            stack_PUSH_MID_RESULT = stackCTR == PUSH_MID_RESULT;
     wire            stack_CALCULATION = stackCTR == PERFORM_CALCULATION;
 
     //======================
@@ -166,7 +166,7 @@ module PN (
     //   FSM
     //======================
     //MAIN FSM
-    always @(posedge clk or posedge rst_n) begin
+    always @(posedge clk or negedge rst_n) begin
         //synopsys_translate_off
         #`C2Q;
         //synopsys_translate_on
@@ -209,6 +209,8 @@ module PN (
             end
             DONE: begin
                 if (in_valid) begin
+                    nextState = IDLE;
+                end else if (mode_POSTFIX || mode_PREFIX) begin
                     nextState = IDLE;
                 end else if (output_done_f) begin
                     nextState = IDLE;
@@ -326,13 +328,16 @@ module PN (
                 PERFORM_OP_POP2: begin
                     stackCTRnext = PERFORM_CALCULATION;
                 end
+                PUSH_MID_RESULT: begin
+                    stackCTRnext = DET_TYPE;
+                end
                 PERFORM_CALCULATION: begin
                     if (mode_POSTFIX_BURST || mode_PREFIX_BURST) begin
                         stackCTRnext = DET_TYPE;
                     end else if (evaluation_done_f) begin
                         stackCTRnext = DET_TYPE;
                     end else begin
-                        stackCTRnext = PERFORM_OP_PUSH; // For postfix and prefix push the value back to stack.
+                        stackCTRnext = PUSH_MID_RESULT; // For postfix and prefix push the value back to stack.
                     end
                 end
                 default: begin
@@ -342,9 +347,9 @@ module PN (
         end
     end
 
-    assign pop  = stackCTRnext == PERFORM_OP_POP1 || stackCTRnext == PERFORM_OP_POP2 || stackCTRnext ==PERFORM_OP_RESULT;
-    assign push = stack_PUSH;
-    assign stack_pushed_value = (stack_CALCULATION && stackCTRnext == PERFORM_OP_PUSH) ? alu_out : buf_current_char ;
+    assign pop = stackCTRnext == PERFORM_OP_POP1 || stackCTRnext == PERFORM_OP_POP2;
+    assign push = stack_PUSH || stack_PUSH_MID_RESULT;
+    assign stack_pushed_value = stack_PUSH_MID_RESULT ? alu_out : buf_current_char;
 
     //===========================
     //   PERFORM OPERATION
@@ -363,7 +368,7 @@ module PN (
                 POSTFIX_BURST, POSTFIX: buf_index_cnt <= buf_index_cnt;
                 default: buf_index_cnt <= buf_index_cnt;
             endcase
-        end else if (stack_PUSH || stack_POP_RESULT || stack_CALCULATION) begin
+        end else if (stack_PUSH || stack_CALCULATION) begin
             case (modeState)
                 PREFIX_BURST, PREFIX: buf_index_cnt <= buf_index_cnt - 1;
                 POSTFIX_BURST, POSTFIX: buf_index_cnt <= buf_index_cnt + 1;
@@ -412,6 +417,8 @@ module PN (
                 out <= result_buf[result_cnt];
             end else if (mode_POSTFIX_BURST) begin
                 out <= result_buf[result_reversed_cnt];
+            end else if (mode_POSTFIX || mode_PREFIX) begin
+                out <= alu_out;
             end else begin
                 out <= out;
             end
