@@ -1,9 +1,0 @@
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/User/Desktop/FPGA_HW/final/PN.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module BE
-INFO: [VRFC 10-311] analyzing module two_stages_bitonic_sorter
-INFO: [VRFC 10-311] analyzing module PN
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/User/Desktop/FPGA_HW/final/stack.v" into library xil_defaultlib
-WARNING: [VRFC 10-9157] macro 'C2Q' is redefined [C:/Users/User/Desktop/FPGA_HW/final/stack.v:1]
-INFO: [VRFC 10-311] analyzing module LIFObuffer
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/User/Desktop/FPGA_HW/final/TESTBED.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module TESTBED
