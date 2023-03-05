@@ -11,6 +11,8 @@
 // Editor : vscode , tab size (4)
 // -----------------------------------------------------------------------------
 `define C2Q 1
+`include "two_stages_bitonic_sorter.v"
+`include "stack.v"
 module PN (
     input clk,
     input rst_n,
@@ -27,11 +29,10 @@ module PN (
     //================================================================
     //integer
     integer i;
-    genvar idx;
     parameter WORD = 8;
     parameter BUFFER_LEN = 16;
-    parameter CNT_LEN = 4;
-    parameter NUM_OF_RESULT = 4;
+    localparam CNT_LEN = 4;
+    localparam NUM_OF_RESULT = 4;
     //================================================================
     //   States
     //================================================================
@@ -87,9 +88,7 @@ module PN (
 
     reg [CNT_LEN-1:0] result_cnt;
 
-    wire signed [WORD-1:0] result_rd[0:3];
-    wire signed [WORD-1:0] sorted_result_d[0:7];
-
+    reg [2:0] operater_type;
 
     //======================
     //   FSM
@@ -103,6 +102,8 @@ module PN (
     //======================
     wire            push;
     wire            pop;
+    wire            empty;
+    wire            full;
     wire [WORD-1:0] stack_popped_value;
     wire [WORD-1:0] stack_pushed_value;
     wire            en = push || pop;
@@ -158,7 +159,6 @@ module PN (
     wire is_operator_f = buf_current_char[15] == 1'b1;
     wire burst_done_f = stack_CALCULATION;
 
-    wire output_done_f = result_cnt == 0;
     //================================================================
     //   Design
     //================================================================
@@ -177,6 +177,7 @@ module PN (
         end
     end
 
+    wire output_done_f = result_cnt == 0;
 
     always @(*) begin
         case (currentState)
@@ -493,6 +494,10 @@ module PN (
     //==========================
     //	   RESULT BUFFER & cnt
     //==========================
+    wire signed [WORD-1:0] result_rd[0:3];
+    wire signed [WORD-1:0] sorted_result_d[0:7];
+
+    genvar idx;
 
     generate
         for (idx = 0; idx < 4; idx = idx + 1) begin
@@ -547,9 +552,9 @@ module PN (
 
         .Rst(rst_n),
 
-        .EMPTY(),
+        .EMPTY(empty),
 
-        .FULL(),
+        .FULL(full),
 
         .Clk(clk)
 
